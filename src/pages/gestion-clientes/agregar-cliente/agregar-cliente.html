@@ -1,0 +1,22 @@
+<ion-header>
+ 
+  <ion-navbar>
+    <ion-title>Agregar producto</ion-title>
+  </ion-navbar>
+ 
+</ion-header>
+ 
+<ion-content padding>
+ 
+  <ion-item>
+    <ion-label>Nombre</ion-label>
+    <ion-input [(ngModel)]="comercio.nombre"></ion-input>
+  </ion-item>
+ 
+  <ion-item>
+    <ion-label>Ciudad</ion-label>
+    <ion-textarea [(ngModel)]="comercio.ciudad"></ion-textarea>
+  </ion-item>
+ 
+  <button ion-button block clear (click)="agregarComercio(comercio)">Add</button>
+</ion-content>

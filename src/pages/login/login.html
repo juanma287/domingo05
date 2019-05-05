@@ -1,0 +1,88 @@
+<!-- -->
+<ion-content padding class="animated fadeIn login auth-page">
+  <div class="login-content">
+
+    <!-- Logo -->
+    <div padding-horizontal text-center class="animated fadeInDown">
+      <div class="logo"></div>
+      <h2 ion-text class="text-primary">
+        <strong>Libreta electrónica</strong> 
+      </h2>
+    </div>
+
+
+    <!-- Login form -->
+    <form class="list-form" [formGroup]="loginForm">
+        <ion-item [ngClass]="{ invalid: emailErrors.hasError('*', ['touched', 'dirty']) }">
+          <ion-label floating>
+                <ion-icon name="mail" item-start class="text-primary"></ion-icon> 
+                Email 
+            </ion-label>
+         <ion-input type="text"  formControlName="email"></ion-input>
+        </ion-item>
+
+        <!-- Si ocurre un error relacionado con el e-mail -->
+        <div ngxErrors="email" class="error" #emailErrors="ngxErrors">
+          <div [ngxError]="['email', 'required']" [when]="['touched', 'dirty']">Correo inválido</div>
+        </div> 
+
+
+
+        <ion-item [ngClass]="{ invalid: passwordErrors.hasError('*', ['touched', 'dirty']) }">
+          <ion-label floating>
+            <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+            Contraseña
+          </ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+
+        <!-- Si ocurre un error relacionado con el pass -->
+        <div ngxErrors="password" class="error" #passwordErrors="ngxErrors">
+          <div [ngxError]="['minlength', 'required']" [when]="['touched', 'dirty']">Debe tener al menos 4 caracteres</div>
+        </div>
+         
+          <div class="error">{{loginError}}</div>
+    </form>
+     
+  
+
+    <div margin-top>
+      <button ion-button icon-start block color="dark" tappable type="submit"   (click)="login()">
+        <ion-icon name="log-in"></ion-icon>
+        INGRESAR
+      </button>
+
+         <p text-center ion-text color="secondary" style="margin-bottom: 0px; margin-top: 28px;">También podes ingresar con:</p>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-4>
+            <button ion-button icon-only block class="btn-gplus" (click)="loginWithGoogle()">
+              <ion-icon name="logo-googleplus"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col col-4>
+            <button ion-button icon-only block class="btn-facebook"  (click)="loginWithFacebook()">
+              <ion-icon name="logo-facebook"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col col-4>
+            <button ion-button icon-only block class="btn-twitter" (click)="loginWithTwitter()">
+              <ion-icon name="logo-twitter"></ion-icon>
+            </button>
+          </ion-col>   
+        </ion-row>
+      </ion-grid>
+    </div>
+    
+
+
+
+   <p text-right ion-text color="secondary" tappable (click)="forgotPass()"><strong>¿Olvidó la contraseña?</strong></p>
+    <!-- Other links -->
+    <div text-center margin-top>
+      <span ion-text color="secondary" tappable (click)="register()">¿Eres nuevo? <strong>Crear cuenta</strong></span>
+    </div>
+
+  </div>
+</ion-content>

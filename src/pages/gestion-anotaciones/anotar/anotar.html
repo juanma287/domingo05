@@ -1,0 +1,118 @@
+
+<!-- -->
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Anotar
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button tappable (click)="configuaraciones($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content padding class="animated fadeIn common-bg">
+
+  <ion-card  no-margin margin-bottom class="full-width">
+    <ion-item tappable  class="border-bottom">
+      <ion-icon name="contacts" color="primary" item-left></ion-icon>
+      <span>{{valoresCuenta?.nombre}}</span>
+    </ion-item>
+    <ion-item>
+       <ion-icon name="md-calendar" color="primary" item-left></ion-icon>
+       <ion-datetime class="no-pl" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="fechaParaHTML" doneText="Ok" cancelText="Cancelar"  (ionChange)="cambiarFecha()" ></ion-datetime>
+   </ion-item>
+  </ion-card>
+
+  <ion-card *ngFor="let detalle of listaDetalle; index as i" no-margin margin-bottom class="full-width" >
+   <ion-grid>
+      <ion-row>
+          <ion-col col-4 style="padding-left: 0px;">
+              <ion-item> 
+                  <ion-select style="max-width: 100%; padding-left: 0px;padding-right: 2px;"  placeholder="Producto" #MySelect (ionChange)="onChangeProducto(MySelect.value, i)"  okText="Ok" cancelText="Cancelar">
+                   <ion-option *ngFor="let producto of listaProductos$ | async"  value="{{producto.key}}" selected="false">{{producto.nombre}}</ion-option>
+                 </ion-select>
+              </ion-item>
+          </ion-col> 
+           <ion-col *ngIf="detalle.unidad != ''" col-4 style="padding-left: 0px;">
+             <ion-item style="padding-left: 0px;">
+               <ion-input type="text" placeholder="{{detalle.unidad}}..." [(ngModel)]="detalle.cantidad"  (ionChange)='onChangeCantidad(i)'></ion-input>
+            </ion-item>
+           </ion-col>
+           <ion-col *ngIf="detalle.cantidad != 0" col-4 text-right>
+               <ion-item>
+                 <ion-label text-right> ${{detalle.total_detalle}} </ion-label>
+               </ion-item>
+           </ion-col>
+     </ion-row>
+   </ion-grid>
+  </ion-card>
+
+ <ion-grid>
+    <ion-row>
+       <ion-col col-6>
+         <button ion-button (click)="agregarDetalle()" *ngIf="entrega == false">
+          <ion-icon name="add"></ion-icon>
+         </button>
+          <button ion-button (click)="eliminarDetalle()" >
+          <ion-icon name="trash"></ion-icon>
+         </button>
+    </ion-col>
+   </ion-row>
+</ion-grid>
+  
+ <br>
+ <ion-card  *ngIf="monto_compra != 0"  no-margin margin-bottom class="full-width">
+   <ion-grid *ngIf="entrega == false">
+      <ion-row>
+          <ion-col col-6 style="padding-left: 0px;">
+              <ion-item> 
+               <label ><b>Total Compra: </b></label>
+              </ion-item>
+          </ion-col> 
+           <ion-col col-6 text-right>
+               <ion-item>
+                 <ion-label text-right><b> ${{monto_compra}} </b></ion-label>
+               </ion-item>
+           </ion-col>
+     </ion-row>
+   </ion-grid>
+   <ion-grid *ngIf="entrega == true">
+      <ion-row>
+          <ion-col col-6 style="padding-left: 0px;">
+              <ion-item> 
+               <label style="color: #3bbf3aa8;"><b>Total Entrega: </b></label>
+              </ion-item>
+          </ion-col> 
+           <ion-col col-6 text-right>
+               <ion-item>
+                 <ion-label text-right style="color: #3bbf3aa8;"><b> ${{monto_compra}} </b></ion-label>
+               </ion-item>
+           </ion-col>
+     </ion-row>
+   </ion-grid>
+  </ion-card>
+  
+  <br>
+  <ion-grid>
+        <ion-row>
+          <ion-col col-6>
+            <button ion-button icon-start block  (click)="anotar()">
+             Aceptar
+            </button>
+          </ion-col>   
+          <ion-col col-6>
+            <button ion-button icon-start block  (click)="volverHome()">
+             Cancelar
+            </button>
+          </ion-col>       
+        </ion-row>
+   </ion-grid>
+
+</ion-content>
+

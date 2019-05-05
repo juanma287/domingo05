@@ -1,0 +1,58 @@
+<!-- -->
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"> </ion-icon>
+    </button>
+    <ion-title>
+     Info Producto
+    </ion-title>
+    <ion-buttons end>
+         <button ion-button tappable (click)="configuaraciones($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content padding class="checkout-trip common-bg"> 
+ 
+   <div class="card round">
+    <div padding>
+      <ion-item no-padding >
+        <ion-label color="dark" >Nombre:</ion-label>
+        <ion-input type="text"  [(ngModel)]="producto.nombre" style="color: #999999;"> {{producto?.nombre}} </ion-input>
+      </ion-item>
+       <ion-item no-padding>
+        <ion-label color="dark">Unidad:</ion-label>
+        <ion-select  style="color: #999999" [(ngModel)]="producto.unidad"  #MySelect (ionChange)="onChange(MySelect.value)" okText="Ok" cancelText="Cancelar">
+          <ion-option value="unidad" >Unidad</ion-option>
+          <ion-option value="kg">Kilogramo</ion-option>
+          <ion-option value="gr">Gramo</ion-option>
+          <ion-option value="hora" >Hora</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item no-padding>
+        <ion-label color="dark">Precio/{{producto?.unidad}}:</ion-label>
+        <ion-input type="number" [(ngModel)]="producto.precio" style="color: #999999">{{producto?.precio}}</ion-input>
+      </ion-item>
+    </div>
+  </div>
+  <BR>
+     <ion-grid>
+        <ion-row>
+          <ion-col col-6>
+            <button ion-button icon-start block  (click)="actualizar(producto)">
+             Actualizar
+            </button>
+          </ion-col>   
+          <ion-col col-6>
+            <button ion-button icon-start block color="danger"  (click)="eliminar(producto)">
+             Eliminar
+            </button>
+          </ion-col>       
+        </ion-row>
+     </ion-grid>
+ 
+
+</ion-content>

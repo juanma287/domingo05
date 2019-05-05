@@ -1,0 +1,123 @@
+
+<!-- -->
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Detalle
+    </ion-title>
+    <ion-buttons end>
+         <button ion-button tappable (click)="configuaraciones($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content padding class="animated fadeIn common-bg ">   
+    <ion-card  no-margin margin-bottom class="full-width">
+    <ion-item tappable  class="border-bottom">
+      <ion-icon name="md-calendar" color="primary" item-left></ion-icon>
+      <span>{{compra?.fecha_compra}}</span>
+    </ion-item>
+    <ion-item>
+       <ion-icon name="logo-usd" color="primary" item-left></ion-icon>
+        <span  *ngIf="compra?.estado != 'anulada'">{{compra?.total_compra}}</span>
+        <span  *ngIf="compra?.estado == 'anulada'" style="text-decoration:line-through">{{compra?.total_compra}}</span>
+   </ion-item>
+  </ion-card>
+
+  <ion-card no-margin margin-bottom class="full-width">
+  <ion-list>
+    <ion-list-header>
+      <div style="text-align: center;">
+        <label *ngIf="compra?.estado == 'anulada'" >MOVIMIENTO ANULADO</label>
+     </div>
+    </ion-list-header>
+    <hr>
+    
+
+   <div  *ngIf="compra?.estado != 'anulada'">
+    <ion-item *ngFor="let item of items">
+      <ion-grid no-padding  >
+        <ion-row *ngIf="item.unidad != 'entrega'"  >
+          <ion-col *ngIf="item.unidad != 'unidad'"  col-4 >
+              {{item.cantidad}}  {{item.unidad}}.  
+          </ion-col> 
+          <ion-col *ngIf="item.unidad == 'unidad'" col-4 > 
+             {{item.cantidad}}  u.  
+          </ion-col> 
+          <ion-col col-4 text-left>
+             {{item.nombre_producto}} 
+          </ion-col> 
+     
+          <ion-col col-4 text-right>
+            ${{item.total_detalle}} 
+          </ion-col>     
+        </ion-row>
+
+        <ion-row *ngIf="item.unidad == 'entrega'"  >
+          <ion-col  col-6 >
+             <label>Entrego</label>
+          </ion-col> 
+     
+          <ion-col col-6 text-right>
+             <label> ${{item.total_detalle}} </label>
+          </ion-col>     
+        </ion-row>
+     </ion-grid>
+     <hr style="margin-top: 0px;  margin-bottom: 0px;">
+    </ion-item>
+  </div>
+
+   <div  *ngIf="compra?.estado == 'anulada'">
+    <ion-item *ngFor="let item of items">
+      <ion-grid no-padding  >
+        <ion-row *ngIf="item.unidad != 'entrega'"  >
+          <ion-col *ngIf="item.unidad != 'unidad'"  col-4 >
+              <span style="text-decoration:line-through">   {{item.cantidad}}  {{item.unidad}}.</span>  
+          </ion-col> 
+          <ion-col *ngIf="item.unidad == 'unidad'" col-4 > 
+              <span style="text-decoration:line-through">  {{item.cantidad}}  u. </span>  
+          </ion-col> 
+          <ion-col col-4 text-left>
+              <span style="text-decoration:line-through">  {{item.nombre_producto}} </span> 
+          </ion-col> 
+     
+          <ion-col col-4 text-right>
+             <span style="text-decoration:line-through">  ${{item.total_detalle}} </span> 
+          </ion-col>     
+        </ion-row>
+
+        <ion-row *ngIf="item.unidad == 'entrega'"  >
+          <ion-col  col-6 >
+             <label style="text-decoration:line-through">Entrego</label>
+          </ion-col> 
+     
+          <ion-col col-6 text-right>
+             <label style="text-decoration:line-through; text-decoration:line-through"> ${{item.total_detalle}} </label>
+          </ion-col>     
+        </ion-row>
+     </ion-grid>
+
+     <hr style="margin-top: 0px;  margin-bottom: 0px;">
+    </ion-item>
+  </div>
+    
+  </ion-list>
+</ion-card>
+
+   <ion-grid *ngIf="compra?.estado == 'intacta'" >
+        <ion-row>
+          <ion-col col-12>
+            <button ion-button icon-start block  (click)="anular()">
+             Anular
+            </button>
+          </ion-col>     
+        </ion-row>
+   </ion-grid>
+
+
+</ion-content>

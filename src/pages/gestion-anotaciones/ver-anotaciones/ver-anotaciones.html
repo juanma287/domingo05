@@ -1,0 +1,62 @@
+
+<!-- -->
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Saldos
+    </ion-title>
+    <ion-buttons end>
+         <button ion-button tappable (click)="configuaraciones($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content padding class="animated fadeIn common-bg ">
+
+   <ion-card  no-margin margin-bottom class="full-width">
+    <ion-item tappable  class="border-bottom">
+      <ion-icon name="contacts" color="primary" item-left></ion-icon>
+      <span>Total Comercio</span>
+    </ion-item>
+    <ion-item>
+       <ion-icon name="logo-usd" color="primary" item-left></ion-icon>
+        <span>${{total}}</span>
+   </ion-item>
+  </ion-card>
+
+  <ion-card no-margin margin-bottom class="full-width">
+  <ion-list>
+    <ion-list-header>
+    <ion-searchbar  placeholder="Buscar.."  (ionInput)="getItems($event)"> </ion-searchbar>
+    </ion-list-header>
+   
+    <hr>
+    <ion-item *ngFor="let cuenta of items$ | async" 
+    (click)="seleccinar(cuenta)">
+      <ion-grid no-padding >
+        <ion-row >
+          <ion-col col-6>
+             <label>{{cuenta.nombre}} </label>
+             
+          </ion-col>     
+          <ion-col col-6 text-right>
+             <label>${{cuenta.total_deuda}}  </label>
+          </ion-col>  
+        </ion-row>
+     </ion-grid>
+     <hr style="margin-top: 0px;  margin-bottom: 0px;">
+    </ion-item> 
+    
+  </ion-list>
+</ion-card>
+
+
+
+
+</ion-content>
+

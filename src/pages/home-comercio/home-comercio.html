@@ -1,0 +1,70 @@
+<!-- -->
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Libreta electrónica
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button tappable (click)="configuaraciones($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="trips detail-bg">
+
+  <div class="trip card" tappable margin-bottom>
+    <div class="background border-bottom" [ngStyle]="{'background-image': 'url(' + urlImagen + ')'}">
+      <div class="background-filter rlt">
+        <div class="align-bottom" padding-left padding-right>
+          <h6 class="pull-left text-white" ion-text style="font-size: 2.1rem;">  {{usuario?.nombre_comercio}}</h6>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+    <div class="padding-sm primary-bg">
+      <ion-icon name="calendar" class="text-white"></ion-icon>
+      <span ion-text class="text-white">{{ fecha_formateda }}  </span>
+      <span class="pull-right" ion-text color="light"><strong>Comercio: </strong>  <span ion-text  class="text-green bold">Activo</span></span>
+    </div>
+  </div>
+
+<ion-card no-margin margin-bottom class="full-width">
+  <ion-card-header style="font-size: 1.9rem;">
+  </ion-card-header> 
+  <hr>
+  <ion-list  class="border-bottom">
+	    <ion-item  tappable (click)="gestionMenuComercio('anotar')" class="border-bottom">
+		     <ion-icon name="create" item-start></ion-icon>
+		      Anotar
+	    </ion-item>
+      <ion-item  tappable (click)="gestionMenuComercio('ver_anotaciones')" class="border-bottom">
+         <ion-icon name="logo-usd" item-start></ion-icon>
+          Saldos
+      </ion-item>
+      
+	    <ion-item tappable (click)="gestionMenuComercio('cuenta')" class="border-bottom">
+	        <ion-icon name="logo-buffer" item-start></ion-icon>
+	        Gestionar cuentas
+	    </ion-item>
+	    <ion-item tappable (click)="gestionMenuComercio('cliente')" class="border-bottom">
+	      <ion-icon name="contacts" item-start></ion-icon>
+	        Clientes vinculados
+	    </ion-item>
+	    <ion-item tappable (click)="gestionMenuComercio('producto')" class="border-bottom">
+	      <ion-icon name="cart" item-start></ion-icon>
+	        Gestionar productos	      
+	    </ion-item>
+
+
+	   
+  </ion-list>
+</ion-card>
+
+
+</ion-content>

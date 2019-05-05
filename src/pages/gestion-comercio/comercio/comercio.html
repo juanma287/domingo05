@@ -1,0 +1,31 @@
+
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      JSA Note
+    </ion-title>
+ 
+    <ion-buttons end>
+      <button navPush="AgregarComercioPage" ion-button>
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content padding>
+  <ion-list>
+    <ion-list-header>
+      Comercios
+    </ion-list-header>
+ 
+    <ion-item *ngFor="let comercio of listaComercios$ | async" 
+    (click)="editarComercio(comercio)">
+      {{comercio.nombre}}
+    </ion-item>
+  </ion-list>
+     <button (click)="agregarComercio()" ion-button>
+        <ion-icon name="add"></ion-icon>
+      </button>
+
+</ion-content>
