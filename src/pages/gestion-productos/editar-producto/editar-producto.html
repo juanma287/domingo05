@@ -20,7 +20,7 @@
    <div class="card round">
     <div padding>
       <ion-item no-padding >
-        <ion-label color="dark" >Nombre:</ion-label>
+        <ion-label color="dark" >Producto:</ion-label>
         <ion-input type="text"  [(ngModel)]="producto.nombre" style="color: #999999;"> {{producto?.nombre}} </ion-input>
       </ion-item>
        <ion-item no-padding>
@@ -28,7 +28,6 @@
         <ion-select  style="color: #999999" [(ngModel)]="producto.unidad"  #MySelect (ionChange)="onChange(MySelect.value)" okText="Ok" cancelText="Cancelar">
           <ion-option value="unidad" >Unidad</ion-option>
           <ion-option value="kg">Kilogramo</ion-option>
-          <ion-option value="gr">Gramo</ion-option>
           <ion-option value="hora" >Hora</ion-option>
         </ion-select>
       </ion-item>

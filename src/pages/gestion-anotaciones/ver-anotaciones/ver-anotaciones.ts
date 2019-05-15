@@ -52,7 +52,7 @@ export class VerAnotacionesPage {
               for (var i = 0; i < length; ++i) {
                 aux = aux + result[i].total_deuda;
               }
-             this.total = aux; 
+             this.total = this.truncateDecimals(aux, 2);
         });
       
    
@@ -66,7 +66,17 @@ export class VerAnotacionesPage {
   {
    this.items$ = this.listaCuentas$;
   }
-  
+
+
+  truncateDecimals (number, digits) {
+    var multiplier = Math.pow(10, digits),
+        adjustedNum = number * multiplier,
+        truncatedNum = Math[adjustedNum < 0 ? 'ceil' : 'floor'](adjustedNum);
+
+    return truncatedNum / multiplier;
+  };
+
+
   getItems(ev: any)
   {
     // primero inicializamos los items por si hubo algun cambio

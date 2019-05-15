@@ -7,7 +7,6 @@ import { ProductoService } from '../../../services/producto.service';
 import { AgregarProductoPage } from "../agregar-producto/agregar-producto";
 import { EditarProductoPage } from "../editar-producto/editar-producto";
 import { Observable } from 'rxjs/Observable';
-import {Storage} from '@ionic/storage';
 
 
 @Component({
@@ -17,7 +16,6 @@ import {Storage} from '@ionic/storage';
 export class ProductoPage {
 
   listaProductos$: Observable<Producto[]>
-  listaProductosLocal: Array<Producto>;
   cantidad: string 
 
   constructor(
@@ -25,7 +23,6 @@ export class ProductoPage {
   	 private productoService: ProductoService,
   	 public loading: LoadingController,
      public popoverCtrl: PopoverController,
-     private storage: Storage,
   	 ) 
 	  {
 	  }
@@ -46,12 +43,6 @@ export class ProductoPage {
               this.cantidad = "CANTIDAD DE PRODUCTOS: "+ result.length +"";      
         });
 
-
-    // TERMINAR CON ESTO
-    this.listaProductos$.subscribe(result => {     
-              this.listaProductosLocal = result;      
-        });
-  	this.storage.set('productos',this.listaProductosLocal);
 
 	  // finalizo loader
     loader.dismiss()                     
@@ -77,3 +68,5 @@ export class ProductoPage {
     });
   }
 }
+
+

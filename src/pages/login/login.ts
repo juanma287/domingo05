@@ -77,24 +77,36 @@ export class LoginPage {
 
   // Ingresar con Google
   loginWithGoogle() {
-  this.auth.signInWithGoogle()
-    .then(() => this.nav.setRoot(HomeComercioPage))
-    .catch(error => console.log(error.message));      
+     //  this.auth.signInWithGoogle()
+   //  .then(() => this.navCtrl.setRoot(ComercioPage))
+   // .catch(error => console.log(error.message)); 
+    const alert = this.alertCtrl.create({
+          title: 'Google',
+          subTitle: 'El ingreso mediante Google se encuentra temporalmente inhabilitado.',
+          buttons: ['OK']
+        });
+        alert.present(); 
   }
 
   // Ingresar con Facebook
   loginWithFacebook() {
-  this.auth.signInWithFacebook()
-    .then(() => this.nav.setRoot(HomeComercioPage))
-    .catch(error => console.log(error.message));
+   // this.auth.signInWithFacebook()
+   // .then(() => this.nav.setRoot(HomeComercioPage))
+   // .catch(error => console.log(error.message));
+        const alert = this.alertCtrl.create({
+          title: 'Facebook',
+          subTitle: 'El ingreso mediante Facebook se encuentra temporalmente inhabilitado.',
+          buttons: ['OK']
+        });
+        alert.present();
     
   }
 
   // Ingresar con Twitter
   loginWithTwitter() {
       const alert = this.alertCtrl.create({
-          title: 'Ingreso Twitter',
-          subTitle: 'El ingreso por medio de twitter aún no se encuentra habilidato.',
+          title: 'Twitter',
+          subTitle: 'El ingreso mediante Twitter se encuentra temporalmente inhabilitado.',
           buttons: ['OK']
         });
         alert.present();

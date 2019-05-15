@@ -67,7 +67,7 @@ export class AgregarProductoPage {
   }
 
   onChange(value) {
-  console.log(value);
+ // console.log(value);
 
   }
 

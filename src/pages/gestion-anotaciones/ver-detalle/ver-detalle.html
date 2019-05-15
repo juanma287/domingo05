@@ -107,7 +107,31 @@
   </div>
     
   </ion-list>
+
+ 
 </ion-card>
+
+  <ion-card *ngIf="compra?.observacion != undefined && compra?.observacion !=''" no-margin margin-bottom class="full-width">
+    <ion-grid>
+        <ion-row>
+          <ion-col  col-12>
+              <div style="text-align: center;">
+                <label  style="color: #757575;">OBSERVACION</label>
+             </div>
+       </ion-col>
+        </ion-row>
+      </ion-grid>
+     <hr>
+    
+      <ion-grid>
+        <ion-row>
+          <ion-col  col-12>
+             <label>{{compra?.observacion}}</label>    
+         </ion-col>
+        </ion-row>
+      </ion-grid>
+  </ion-card>
+
 
    <ion-grid *ngIf="compra?.estado == 'intacta'" >
         <ion-row>

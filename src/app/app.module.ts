@@ -66,8 +66,6 @@ import { AnotacionesService } from '../services/anotaciones.service';
 import { DatePipe } from '@angular/common';
 
 
-
-
 @NgModule({
   declarations: [
     MyApp,

@@ -50,10 +50,10 @@ export class MyApp {
 
     this.appMenuItems = [
       {title: 'Inicio', component: HomeComercioPage, icon: 'home'},
-      {title: 'Anotador', component: BuscarCuentaPage, icon: 'create'},
+      {title: 'Anotar', component: BuscarCuentaPage, icon: 'create'},
       {title: 'Saldos', component: VerAnotacionesPage, icon: 'logo-usd'},
       {title: 'Gestionar cuentas', component: CuentaPage, icon: 'logo-buffer'},
-      {title: 'Clientes Vinculados', component: ClientePage, icon: 'contacts'},
+     // {title: 'Clientes Vinculados', component: ClientePage, icon: 'contacts'},
       {title: 'Gestionar productos', component: ProductoPage, icon: 'cart'}  
     ];
   }
@@ -98,7 +98,7 @@ export class MyApp {
                             }
                           else
                            {
-                              alert("cliente");
+                              // aca debería mandarlo a una pagina en blanco pidiedo activacion
                               this.rootPage = HomeComercioPage;
 
                            }

@@ -58,23 +58,36 @@ export class RegisterPage {
 
   // Ingresar con Google
  registerWithGoogle() {
-  this.auth.signInWithGoogle()
-    .then(() => this.navCtrl.setRoot(ComercioPage))
-    .catch(error => console.log(error.message));  
+   //  this.auth.signInWithGoogle()
+   //  .then(() => this.navCtrl.setRoot(ComercioPage))
+   // .catch(error => console.log(error.message)); 
+    const alert = this.alertCtrl.create({
+          title: 'Google',
+          subTitle: 'El ingreso mediante Google se encuentra temporalmente inhabilitado.',
+          buttons: ['OK']
+        });
+        alert.present(); 
     
   }
 
   // Ingresar con Facebook
  registerWithFacebook() {
-  this.auth.signInWithFacebook()
-    .then(() => this.navCtrl.setRoot(ComercioPage))
-    .catch(error => console.log(error.message));  
+   // this.auth.signInWithFacebook()
+   // .then(() => this.nav.setRoot(HomeComercioPage))
+   // .catch(error => console.log(error.message));
+        const alert = this.alertCtrl.create({
+          title: 'Facebook',
+          subTitle: 'El ingreso mediante Facebook se encuentra temporalmente inhabilitado.',
+          buttons: ['OK']
+        });
+        alert.present();
+    
   }
 
   // Ingresar con Twitter
   registerWithTwitter() {
       const alert = this.alertCtrl.create({
-          title: 'Registro Twitter',
+          title: 'Twitter',
           subTitle: 'El registro por medio de twitter aún no se encuentra habilidato.',
           buttons: ['OK']
         });

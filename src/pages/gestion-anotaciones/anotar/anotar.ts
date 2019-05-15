@@ -12,7 +12,6 @@ import { BuscarCuentaPage } from "../../gestion-anotaciones/buscar-cuenta/buscar
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { Observable } from 'rxjs/Observable';
 import { DatePipe } from '@angular/common';
-import {Storage} from '@ionic/storage';
 
 
 
@@ -28,6 +27,7 @@ export class Anotar {
       fecha_compra_number: 0,
       estado: 'intacta',
       tipo: '',
+      observacion: '',
     };
 
    // Lista de detalles que forman parte de la compra 
@@ -44,7 +44,6 @@ export class Anotar {
    // lista de productos que tiene el comercio y el producto elegido en un detalle
    listaProductos$: Observable<Producto[]>
    productoDetalle$:Observable<Producto[]>
-   listaProductosLocal: any;
 
    // cuenta en la que anotaremos 
    cuenta: Cuenta;
@@ -55,7 +54,7 @@ export class Anotar {
    entrega: boolean; // si entrega o no entrega dinero
     
    // fecha y monto de la compra 
-   fechaParaHTML = new Date().toISOString();
+   fechaParaHTML:string;
    pipe = new DatePipe('es'); 
    fecha_compra_number : any;
    fecha_compra:any;
@@ -70,8 +69,7 @@ export class Anotar {
      public alertCtrl: AlertController,
      public popoverCtrl: PopoverController,
      public navParams: NavParams,
-     public toastCtrl: ToastController,
-     private storage: Storage
+     public toastCtrl: ToastController
   	 ) 
 	  {
      // leemos el parametro y cargamos los valores en la variable valoresCuenta
@@ -81,6 +79,7 @@ export class Anotar {
      this.key_cuenta = this.valoresCuenta.key
      this.total_deuda = this.valoresCuenta.total_deuda;
      
+     this.fechaParaHTML = new Date().toISOString();
      this.fecha_compra = this.pipe.transform(this.fechaParaHTML ,'dd/MM/yyyy');
      this.fecha_compra_number = new Date(this.fechaParaHTML).getTime();
 
@@ -88,9 +87,6 @@ export class Anotar {
      this.entrega = false;
      this.total_items = 1;
 
-     // TERMINAR CON ESTO
-     this.listaProductosLocal = this.storage.get('productos');
-     console.log(this.listaProductosLocal );
 
 	  }
 
@@ -130,7 +126,9 @@ export class Anotar {
 
             this.inicializarCompra();
             this.anotacionesService.agregarCompra(this.key_cuenta,this.compra).then(ref => {
-                 let key_compra = ref.key;
+              let key_compra = ref.key;
+              if(key_compra != undefined)
+               {
                  let length = this.listaDetalle.length;
                  for (var i = 0; i < length; ++i) 
                  {
@@ -140,9 +138,14 @@ export class Anotar {
                  this.anotacionesService.actualizarCuentaComercio(this.key_cuenta, this.total_deuda, this.compra.total_compra, this.entrega, this.compra.fecha_compra,  this.compra.fecha_compra_number );
                  this.anotacionesService.actualizarCuentaGeneral(this.key_cuenta, this.total_deuda,this.compra.total_compra, this.entrega, this.compra.fecha_compra, this.compra.fecha_compra_number);
                       // finalizo loader
-               loader.dismiss(); 
-               toast.present();   
-               this.navCtrl.pop();
+                 loader.dismiss(); 
+                 toast.present();   
+                 this.navCtrl.pop();
+               } 
+               else
+               {
+                 alert("se produjo un error y no se almaceno la compra");
+               }           
             })
           })           
      }
