@@ -20,12 +20,12 @@
     <ion-card  no-margin margin-bottom class="full-width">
     <ion-item tappable  class="border-bottom">
       <ion-icon name="md-calendar" color="primary" item-left></ion-icon>
-      <span>{{compra?.fecha_compra}}</span>
+      <span>{{feha | date: 'dd/MM/yyyy - h:mm a'}}</span>
     </ion-item>
     <ion-item>
        <ion-icon name="logo-usd" color="primary" item-left></ion-icon>
-        <span  *ngIf="compra?.estado != 'anulada'">{{compra?.total_compra}}</span>
-        <span  *ngIf="compra?.estado == 'anulada'" style="text-decoration:line-through">{{compra?.total_compra}}</span>
+        <span  *ngIf="compra?.estado != 'anulada'">{{compra?.total_compra  | number:"1.0-2"}}</span>
+        <span  *ngIf="compra?.estado == 'anulada'" style="text-decoration:line-through">{{compra?.total_compra  | number:"1.0-2"}}</span>
    </ion-item>
   </ion-card>
 
@@ -54,7 +54,7 @@
           </ion-col> 
      
           <ion-col col-4 text-right>
-            ${{item.total_detalle}} 
+            ${{item.total_detalle | number:"1.0-2"}} 
           </ion-col>     
         </ion-row>
 
@@ -64,7 +64,7 @@
           </ion-col> 
      
           <ion-col col-6 text-right>
-             <label> ${{item.total_detalle}} </label>
+             <label> ${{item.total_detalle | number:"1.0-2"}} </label>
           </ion-col>     
         </ion-row>
      </ion-grid>
@@ -87,7 +87,7 @@
           </ion-col> 
      
           <ion-col col-4 text-right>
-             <span style="text-decoration:line-through">  ${{item.total_detalle}} </span> 
+             <span style="text-decoration:line-through">  ${{item.total_detalle | number:"1.0-2"}} </span> 
           </ion-col>     
         </ion-row>
 
@@ -97,7 +97,7 @@
           </ion-col> 
      
           <ion-col col-6 text-right>
-             <label style="text-decoration:line-through; text-decoration:line-through"> ${{item.total_detalle}} </label>
+             <label style="text-decoration:line-through; text-decoration:line-through"> ${{item.total_detalle | number:"1.0-2"}} </label>
           </ion-col>     
         </ion-row>
      </ion-grid>

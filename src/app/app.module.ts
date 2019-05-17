@@ -65,7 +65,13 @@ import { AnotacionesService } from '../services/anotaciones.service';
 
 import { DatePipe } from '@angular/common';
 
+import { LOCALE_ID } from '@angular/core';
+import localeEs from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localeEs);
 
+
+  
 @NgModule({
   declarations: [
     MyApp,
@@ -156,7 +162,8 @@ import { DatePipe } from '@angular/common';
     ProductoService,
     CuentaService,
     AnotacionesService,
-    DatePipe
+    DatePipe,
+    {provide: LOCALE_ID, useValue:"es" }
   ]
 })
 

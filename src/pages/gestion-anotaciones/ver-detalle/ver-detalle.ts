@@ -21,6 +21,7 @@ export class VerDetallePage {
    detalle: any=[];
    valoresCompra:any;
    items: Array<any[]>;
+   feha: number;
  
   constructor(
    	 public navCtrl: NavController,
@@ -35,6 +36,7 @@ export class VerDetallePage {
      this.valoresCompra = (<any>Object).values(this.navParams.data);
      this.cuenta = this.valoresCompra['0'];
      this.compra = this.valoresCompra['1'];
+     this.feha = this.compra.fecha_compra_number * -1;
      this.detalle = this.valoresCompra['1'].detalle; 
      this.items = Object.keys(this.detalle).map(i => this.detalle[i]);
 

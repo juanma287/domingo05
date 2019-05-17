@@ -25,7 +25,7 @@
     </ion-item>
     <ion-item>
        <ion-icon name="logo-usd" color="primary" item-left></ion-icon>
-        <span>{{total_deuda}}</span>
+        <span>{{total_deuda  | number:"1.0-2"}}</span>
    </ion-item>
   </ion-card>
 
@@ -47,8 +47,8 @@
             <span *ngIf="compra.tipo == 'entrega'" style="color: #3bbf3a;"> {{compra.fecha_compra}} </span> 
           </ion-col> 
           <ion-col col-6 text-right>
-           <span *ngIf="compra.tipo != 'entrega'"> ${{compra.total_compra}} </span>
-           <span *ngIf="compra.tipo == 'entrega'" style="color: #3bbf3a;">  - ${{compra.total_compra}} </span>
+           <span *ngIf="compra.tipo != 'entrega'"> ${{compra.total_compra  | number:"1.0-2"}} </span>
+           <span *ngIf="compra.tipo == 'entrega'" style="color: #3bbf3a;">  - ${{compra.total_compra | number:"1.0-2"}} </span>
           </ion-col>     
         </ion-row>
 
@@ -58,8 +58,8 @@
             <span *ngIf="compra.tipo == 'entrega'" style="color: #3bbf3a; text-decoration:line-through "> {{compra.fecha_compra}} </span> 
           </ion-col> 
           <ion-col col-6 text-right>
-           <span *ngIf="compra.tipo != 'entrega'" style="text-decoration:line-through"> ${{compra.total_compra}} </span>
-           <span *ngIf="compra.tipo == 'entrega'" style="color: #3bbf3a; text-decoration:line-through ">  - ${{compra.total_compra}} </span>
+           <span *ngIf="compra.tipo != 'entrega'" style="text-decoration:line-through"> ${{compra.total_compra | number:"1.0-2"}} </span>
+           <span *ngIf="compra.tipo == 'entrega'" style="color: #3bbf3a; text-decoration:line-through ">  - ${{compra.total_compra | number:"1.0-2"}} </span>
           </ion-col>     
         </ion-row>
 
