@@ -6,7 +6,8 @@ import { AnotacionesService } from '../../../services/anotaciones.service'
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { VerDetallePage } from "../../gestion-anotaciones/ver-detalle/ver-detalle";
 import { Observable } from 'rxjs/Observable';
-
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -26,6 +27,10 @@ export class VerAnotacionesCuentaPage {
    total_deuda: any;
    cantidad: any;
 
+    listadeComprasArray: any;
+    pipe = new DatePipe('es'); 
+    fecha: string;
+    fecha_formateda: string;
 
   constructor(
    	 public navCtrl: NavController,
@@ -33,7 +38,9 @@ export class VerAnotacionesCuentaPage {
   	 public loading: LoadingController,
      public alertCtrl: AlertController,
      public popoverCtrl: PopoverController,
-     public navParams: NavParams
+     public navParams: NavParams,
+     private socialSharing: SocialSharing
+
   	 ) 
 	  {
      // leemos el parametro y cargamos los valores en la variable valoresCuenta
@@ -42,6 +49,10 @@ export class VerAnotacionesCuentaPage {
      this.valoresCuenta = this.valoresCuenta['0'];
      this.key_cuenta = this.valoresCuenta.key
      this.total_deuda = this.valoresCuenta.total_deuda;
+
+
+    this.fecha = new Date().toISOString();
+    this.fecha_formateda = this.pipe.transform(this.fecha ,'dd/MM/yyyy');
 
 	  }
 
@@ -58,7 +69,8 @@ export class VerAnotacionesCuentaPage {
          }));
        });    
        // calculamos la cantidad de compras
-        this.listaCompras$.subscribe(result => {     
+        this.listaCompras$.subscribe(result => {   
+              this.listadeComprasArray = result; 
               this.cantidad = "CANTIDAD DE COMPRAS: "+ result.length +"";      
         });
 
@@ -75,6 +87,78 @@ export class VerAnotacionesCuentaPage {
      this.navCtrl.push(VerDetallePage, {cuenta:this.cuenta, compra: compra});
   }
  
+
+  compartir()
+  {
+      let msj = this.armarMsj();
+    //  console.log(msj);
+      this.socialSharing.share(msj, null, null, null).then(() => {
+      //  console.log("exito");
+      }).catch(() => {
+       // console.log("fracaso");
+      });
+
+  }
+
+  armarMsj()
+  {
+     var msg = "Estimado Cliente: " ;
+     msg += this.valoresCuenta.nombre;
+     msg += "\nEl total anotado a la fecha: " ;
+     msg += this.fecha_formateda;
+     msg += "\nEs de $";
+     msg += this.total_deuda;
+     
+     msg += "\n\nMovimientos\n";
+     msg += "-------------------------";
+     msg += "\n";
+    
+     let length = this.listadeComprasArray.length;
+     for (var i = 0; i < length; ++i) {
+         if(this.listadeComprasArray[i].estado != "anulada")
+         {
+           msg += this.listadeComprasArray[i].fecha_compra;
+           msg += "\n";
+
+            let detalle = Object.keys(this.listadeComprasArray[i].detalle).map(j => this.listadeComprasArray[i].detalle[j]);
+            let detalleLength = detalle.length;
+            for (var z = 0; z < detalleLength; ++z) {
+              if(detalle[z].unidad !="entrega")
+              {
+                 msg += detalle[z].cantidad;
+                 if(detalle[z].unidad == "unidad")
+                 {
+                   msg += "u";
+                 }
+                 else
+                 {
+                   msg += detalle[z].unidad;
+                 }
+                 msg += "  ";
+                 msg += detalle[z].nombre_producto;
+                 msg += "  $";
+                 msg += detalle[z].total_detalle;          
+                 msg += "\n";
+              }
+              else
+              {
+                 msg += "Entrega   "
+                 msg += "  - $";
+                 msg += detalle[z].total_detalle;          
+                 msg += "\n";
+              }
+                
+                
+            }
+
+           msg += "-------------------------";
+           msg += "\n";
+         }
+  
+     }
+
+     return msg.concat("\nEnviado desde la aplicación :: Libreta Electrónica V1.1");
+  }
 
   configuaraciones(myEvent) {
     let popover = this.popoverCtrl.create(ConfiguaracionesPage);

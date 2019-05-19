@@ -21,14 +21,14 @@ export class VerAnotacionesPage {
   items$: Observable<Cuenta[]>
   total: number=0
 
+
   constructor(
    	 public navCtrl: NavController,
   	 private cuentaService: CuentaService,
   	 public loading: LoadingController,
-     public popoverCtrl: PopoverController
+     public popoverCtrl: PopoverController,
   	 ) 
-	  {
-      
+	  {    
 	  }
 
   ionViewDidLoad() {
@@ -101,7 +101,6 @@ export class VerAnotacionesPage {
   {
   	 this.navCtrl.push(VerAnotacionesCuentaPage, {cuenta: cuenta});
   }
-
 
 
   configuaraciones(myEvent) {

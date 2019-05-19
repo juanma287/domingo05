@@ -62,6 +62,7 @@ import { ProductoService } from '../services/producto.service';
 import { CuentaService } from '../services/cuenta.service';
 import { AnotacionesService } from '../services/anotaciones.service';
 
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 import { DatePipe } from '@angular/common';
 
@@ -71,7 +72,6 @@ import { registerLocaleData } from '@angular/common';
 registerLocaleData(localeEs);
 
 
-  
 @NgModule({
   declarations: [
     MyApp,
@@ -163,6 +163,7 @@ registerLocaleData(localeEs);
     CuentaService,
     AnotacionesService,
     DatePipe,
+    SocialSharing,
     {provide: LOCALE_ID, useValue:"es" }
   ]
 })

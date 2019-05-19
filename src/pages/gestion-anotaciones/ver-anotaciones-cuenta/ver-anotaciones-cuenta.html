@@ -22,8 +22,10 @@
     <ion-item tappable  class="border-bottom">
       <ion-icon name="contacts" color="primary" item-left></ion-icon>
       <span>{{valoresCuenta?.nombre}}</span>
+      <ion-icon name="share" (click)="compartir()" color="primary" item-right></ion-icon>
     </ion-item>
     <ion-item>
+
        <ion-icon name="logo-usd" color="primary" item-left></ion-icon>
         <span>{{total_deuda  | number:"1.0-2"}}</span>
    </ion-item>
