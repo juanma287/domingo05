@@ -121,7 +121,7 @@ export class AnotacionesService {
     actualizarCuentaComercio(key_cuenta, total_deuda_cuenta,  monto_compra, tipo, fecha_compra, fecha_compra_number) {   
       
       let path =  'lista-comercio/'+ this.key_comercio+'/cuentas/'+ key_cuenta;
-      if(tipo) // si es entrega
+      if(tipo == 'entrega') // si es entrega
       {
         let data =
          { 
@@ -150,7 +150,7 @@ export class AnotacionesService {
     actualizarCuentaGeneral(key_cuenta, total_deuda_cuenta, monto_compra, tipo,  fecha_compra, fecha_compra_number) {   
                       
       let path =  'lista-cuenta/'+ this.key_comercio+'/'+ key_cuenta;
-      if(tipo) // si es entrega
+      if(tipo == 'entrega') // si es entrega
       {
         let data =
          { 

@@ -17,6 +17,8 @@ export class ProductoPage {
 
   listaProductos$: Observable<Producto[]>
   cantidad: string 
+  // ver de almacenar este array en localstorage para luego usarlo al anotar
+  //listadeComprasArray: any;
 
   constructor(
    	 public navCtrl: NavController,
@@ -40,6 +42,8 @@ export class ProductoPage {
 
       // calculamos la cantidad de productos
       this.listaProductos$.subscribe(result => {     
+             // this.listadeComprasArray = result; 
+             // console.log(this.listadeComprasArray);
               this.cantidad = "CANTIDAD DE PRODUCTOS: "+ result.length +"";      
         });
 

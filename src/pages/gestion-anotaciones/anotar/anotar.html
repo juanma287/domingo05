@@ -14,9 +14,22 @@
       </button>
     </ion-buttons>
   </ion-navbar>
+
+    <ion-segment [(ngModel)]="operacion" >
+      <ion-segment-button value="anota">
+        Compra
+      </ion-segment-button>
+      <ion-segment-button value="entrega">
+        Entrega
+      </ion-segment-button>
+      <ion-segment-button value="actualiza">
+        Actualiza
+      </ion-segment-button>
+    </ion-segment>
 </ion-header>
  
 <ion-content padding class="animated fadeIn common-bg">
+
 
   <ion-card  no-margin margin-bottom class="full-width">
     <ion-item tappable  class="border-bottom">
@@ -29,7 +42,9 @@
    </ion-item>
   </ion-card>
 
-  <ion-card *ngFor="let detalle of listaDetalle; index as i" no-margin margin-bottom class="full-width" >
+
+<div *ngIf="operacion == 'anota'">
+  <ion-card  *ngFor="let detalle of listaDetalle; index as i" no-margin margin-bottom class="full-width" >
    <ion-grid>
       <ion-row>
           <ion-col col-4 style="padding-left: 0px;">
@@ -52,11 +67,51 @@
      </ion-row>
    </ion-grid>
   </ion-card>
+</div>
 
- <ion-grid>
+
+<div *ngIf="operacion == 'entrega'">
+  <ion-card  *ngFor="let detalle of listaDetalle; index as i" no-margin margin-bottom class="full-width" >
+   <ion-grid>
+      <ion-row>
+          <ion-col col-6 style="padding-left: 0px;">
+              <ion-item> 
+                  <ion-select style="max-width: 100%; padding-left: 0px;padding-right: 2px;"  placeholder="Seleccione.." #MySelect (ionChange)="onChangeEntrega(MySelect.value, i)"  okText="Ok" cancelText="Cancelar">
+                      <ion-option value="total">Entrega total</ion-option>
+                      <ion-option value="parcial" >Entrega parcial</ion-option>
+                 </ion-select>
+              </ion-item>
+          </ion-col> 
+           <ion-col  col-6 style="padding-left: 0px;">
+             <ion-item style="padding-left: 0px;">
+               <ion-input type="text" *ngIf="detalle.unidad != ''"  placeholder="Monto..." [(ngModel)]="detalle.cantidad"  (ionChange)='onChangeCantidad(i)'></ion-input>
+            </ion-item>
+           </ion-col>
+        
+     </ion-row>
+   </ion-grid>
+  </ion-card>
+</div>
+
+<div *ngIf="operacion == 'actualiza'">
+  <ion-card  *ngFor="let detalle of listaDetalle; index as i" no-margin margin-bottom class="full-width" >
+   <ion-grid>
+      <ion-row>
+           <ion-col  col-12 style="padding-left: 0px;">
+             <ion-item style="padding-left: 0px;">
+               <ion-input type="text"  placeholder="Monto a actualizar..." [(ngModel)]="detalle.cantidad"  (ionChange)='cargarActualizacion(i)'></ion-input>
+            </ion-item>
+           </ion-col>
+        
+     </ion-row>
+   </ion-grid>
+  </ion-card>
+</div>
+
+ <ion-grid *ngIf="operacion == 'anota'">
     <ion-row>
        <ion-col col-6>
-         <button ion-button (click)="agregarDetalle()" *ngIf="entrega == false">
+         <button ion-button (click)="agregarDetalle()">
           <ion-icon name="add"></ion-icon>
          </button>
           <button ion-button (click)="eliminarDetalle()" >
@@ -68,7 +123,7 @@
   
  <br>
  <ion-card  *ngIf="monto_compra != 0"  no-margin margin-bottom class="full-width">
-   <ion-grid *ngIf="entrega == false">
+   <ion-grid *ngIf="operacion == 'anota'">
       <ion-row>
           <ion-col col-6 style="padding-left: 0px;">
               <ion-item> 
@@ -82,7 +137,8 @@
            </ion-col>
      </ion-row>
    </ion-grid>
-   <ion-grid *ngIf="entrega == true">
+
+   <ion-grid *ngIf="operacion == 'entrega'">
       <ion-row>
           <ion-col col-6 style="padding-left: 0px;">
               <ion-item> 
@@ -90,6 +146,21 @@
               </ion-item>
           </ion-col> 
            <ion-col col-6 text-right>
+               <ion-item>
+                 <ion-label text-right style="color: #3bbf3aa8;"><b> ${{monto_compra}} </b></ion-label>
+               </ion-item>
+           </ion-col>
+     </ion-row>
+   </ion-grid>
+
+   <ion-grid *ngIf="operacion == 'actualiza'">
+      <ion-row>
+          <ion-col col-8 style="padding-left: 0px;">
+              <ion-item> 
+               <label style="color: #3bbf3aa8;"><b>Total Actualizacion: </b></label>
+              </ion-item>
+          </ion-col> 
+           <ion-col col-4 text-right>
                <ion-item>
                  <ion-label text-right style="color: #3bbf3aa8;"><b> ${{monto_compra}} </b></ion-label>
                </ion-item>

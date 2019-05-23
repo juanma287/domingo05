@@ -110,7 +110,7 @@ export class VerAnotacionesCuentaPage {
      msg += this.total_deuda;
      
      msg += "\n\nMovimientos\n";
-     msg += "-------------------------";
+     msg += "----------------------------";
      msg += "\n";
     
      let length = this.listadeComprasArray.length;
@@ -151,7 +151,7 @@ export class VerAnotacionesCuentaPage {
                 
             }
 
-           msg += "-------------------------";
+           msg += "----------------------------";
            msg += "\n";
          }
   

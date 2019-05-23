@@ -59,6 +59,8 @@ export class Anotar {
    fecha_compra_number : any;
    fecha_compra:any;
    monto_compra: number = 0;
+   // lo usamos para las pestañas (ion-segment)
+   operacion: string;
 
 
   constructor(
@@ -83,12 +85,12 @@ export class Anotar {
      this.fecha_compra = this.pipe.transform(this.fechaParaHTML ,'dd/MM/yyyy');
      this.fecha_compra_number = new Date(this.fechaParaHTML).getTime();
 
-     // por defecto no entrega dinero
-     this.entrega = false;
      this.total_items = 1;
-
+     this.operacion = "anota";
 
 	  }
+      
+
 
   ionViewDidLoad() {
        // traemos los productos del comercio
@@ -106,6 +108,8 @@ export class Anotar {
        loader.dismiss()                     
        });
   }
+
+  
 
   anotar()
   {
@@ -135,8 +139,8 @@ export class Anotar {
                   this.anotacionesService.agregarDetalle(this.key_cuenta, key_compra,this.listaDetalle[i]);
                  }
                  // actualizamos la cuenta del comercio y la cuenta general
-                 this.anotacionesService.actualizarCuentaComercio(this.key_cuenta, this.total_deuda, this.compra.total_compra, this.entrega, this.compra.fecha_compra,  this.compra.fecha_compra_number );
-                 this.anotacionesService.actualizarCuentaGeneral(this.key_cuenta, this.total_deuda,this.compra.total_compra, this.entrega, this.compra.fecha_compra, this.compra.fecha_compra_number);
+                 this.anotacionesService.actualizarCuentaComercio(this.key_cuenta, this.total_deuda, this.compra.total_compra, this.operacion, this.compra.fecha_compra,  this.compra.fecha_compra_number );
+                 this.anotacionesService.actualizarCuentaGeneral(this.key_cuenta, this.total_deuda,this.compra.total_compra, this.operacion, this.compra.fecha_compra, this.compra.fecha_compra_number);
                       // finalizo loader
                  loader.dismiss(); 
                  toast.present();   
@@ -144,7 +148,7 @@ export class Anotar {
                } 
                else
                {
-                 alert("se produjo un error y no se almaceno la compra");
+                 alert("se produjo un error y no se almaceno la compra, vuelva a intentarlo");
                }           
             })
           })           
@@ -166,17 +170,9 @@ export class Anotar {
      this.compra.fecha_compra = this.fecha_compra;
      // se pone negativa para poder ordenar desendente con firebase
      this.compra.fecha_compra_number = this.fecha_compra_number * -1;
-     if(this.entrega)
-     {
-       this.compra.tipo = "entrega";
-     }
-     else
-     {
-       this.compra.tipo = "anota"
-     }
-
+     this.compra.tipo = this.operacion;
+   
   }
-
 
   cambiarFecha()  {
     this.fecha_compra = this.pipe.transform(this.fechaParaHTML ,'dd/MM/yyyy');
@@ -200,9 +196,6 @@ export class Anotar {
   // por defecto eleiminamos el ultimo item
   eliminarDetalle() {
     this.listaDetalle.pop();
-    if(this.listaDetalle.length == 0) // si no hay ningun detalle tampoco hay entrega
-      this.entrega = false;
-    
     this.total_items = this.total_items - 1;  
     this.calcularTotalCompra();
   }
@@ -231,27 +224,35 @@ export class Anotar {
         this.listaDetalle[indice].precio = val[0].precio;
 
         // LLamaos a este metodo por si cambia el producto luego de ingresar la cantidad
-        this.onChangeCantidad(indice);
-
-
-          if(val[0].unidad == "entrega" && this.total_items <= 1)
-          {
-             this.entrega = true;
-          }
-          else if(val[0].unidad == "entrega" && this.total_items > 1)
-          {
-             this.entrega = false;
-                const alert = this.alertCtrl.create({
-                title: 'Advertencia',
-                subTitle: 'Si ingresa productos no puede ingresar entrega.',
-                buttons: ['OK']
-               });
-               alert.present();
-              }       
+        this.onChangeCantidad(indice);    
       }
     );
-    
+  }
 
+  onChangeEntrega(key,indice)
+  {
+    this.listaDetalle[indice].nombre_producto = "entrega";
+    this.listaDetalle[indice].id_producto = "";
+    this.listaDetalle[indice].unidad = "entrega";
+    this.listaDetalle[indice].precio = 1;
+    if(key == "total")
+    {
+        this.listaDetalle[indice].cantidad = this.total_deuda;
+        this.onChangeCantidad(indice);
+    }
+    else
+    {
+      this.listaDetalle[indice].cantidad = '';
+    }
+  }
+
+  cargarActualizacion(indice)
+  {
+    this.listaDetalle[indice].nombre_producto = "actualiza";
+    this.listaDetalle[indice].id_producto = "";
+    this.listaDetalle[indice].unidad = "actualiza";
+    this.listaDetalle[indice].precio = 1;
+    this.onChangeCantidad(indice);
   }
 
  calcularTotalCompra(){
