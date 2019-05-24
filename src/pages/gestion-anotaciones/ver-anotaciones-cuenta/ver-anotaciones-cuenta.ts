@@ -91,7 +91,7 @@ export class VerAnotacionesCuentaPage {
   compartir()
   {
       let msj = this.armarMsj();
-    //  console.log(msj);
+      //console.log(msj);
       this.socialSharing.share(msj, null, null, null).then(() => {
       //  console.log("exito");
       }).catch(() => {
@@ -104,13 +104,13 @@ export class VerAnotacionesCuentaPage {
   {
      var msg = "Estimado Cliente: " ;
      msg += this.valoresCuenta.nombre;
-     msg += "\nEl total anotado a la fecha: " ;
+     msg += "\nEl total anotado al: " ;
      msg += this.fecha_formateda;
-     msg += "\nEs de $";
+     msg += "\nEs de: $";
      msg += this.total_deuda;
      
      msg += "\n\nMovimientos\n";
-     msg += "----------------------------";
+     msg += "-----------------------------";
      msg += "\n";
     
      let length = this.listadeComprasArray.length;
@@ -123,7 +123,7 @@ export class VerAnotacionesCuentaPage {
             let detalle = Object.keys(this.listadeComprasArray[i].detalle).map(j => this.listadeComprasArray[i].detalle[j]);
             let detalleLength = detalle.length;
             for (var z = 0; z < detalleLength; ++z) {
-              if(detalle[z].unidad !="entrega")
+              if(detalle[z].unidad !="entrega" && detalle[z].unidad !="actualiza")
               {
                  msg += detalle[z].cantidad;
                  if(detalle[z].unidad == "unidad")
@@ -140,18 +140,24 @@ export class VerAnotacionesCuentaPage {
                  msg += detalle[z].total_detalle;          
                  msg += "\n";
               }
-              else
+              else if(detalle[z].unidad == "entrega")
               {
                  msg += "Entrega   "
                  msg += "  - $";
                  msg += detalle[z].total_detalle;          
                  msg += "\n";
               }
-                
+               else if(detalle[z].unidad == "actualiza")
+              {
+                 msg += "Actualización   "
+                 msg += "    $";
+                 msg += detalle[z].total_detalle;          
+                 msg += "\n";
+              }    
                 
             }
 
-           msg += "----------------------------";
+           msg += "-----------------------------";
            msg += "\n";
          }
   

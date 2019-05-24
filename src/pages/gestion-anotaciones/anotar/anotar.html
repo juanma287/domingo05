@@ -50,7 +50,7 @@
           <ion-col col-4 style="padding-left: 0px;">
               <ion-item> 
                   <ion-select style="max-width: 100%; padding-left: 0px;padding-right: 2px;"  placeholder="Producto" #MySelect (ionChange)="onChangeProducto(MySelect.value, i)"  okText="Ok" cancelText="Cancelar">
-                   <ion-option *ngFor="let producto of listaProductos$ | async"  value="{{producto.key}}" selected="false">{{producto.nombre}}</ion-option>
+                   <ion-option *ngFor="let producto of listadeProductosArray"  value="{{producto.key}}" selected="false">{{producto.nombre}}</ion-option>
                  </ion-select>
               </ion-item>
           </ion-col> 

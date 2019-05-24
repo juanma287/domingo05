@@ -88,15 +88,25 @@ export class VerDetallePage {
         position: 'bottom',
         cssClass: "yourCssClassName",
       });
-   
-       if(tipo_compra == "anota")
-        {
-           total_deuda_nuevo = total_deuda - total_compra; 
-        }
-       else if(tipo_compra == "entrega")
-        {
-           total_deuda_nuevo = total_deuda + total_compra; 
-        }
+
+        switch(tipo_compra) { 
+         case "anota": { 
+            total_deuda_nuevo = total_deuda - total_compra; 
+            break; 
+         } 
+         case "actualiza": { 
+            total_deuda_nuevo = total_deuda - total_compra; 
+            break; 
+         }   
+         case "entrega": { 
+            total_deuda_nuevo = total_deuda + total_compra; 
+            break; 
+         }
+         default: { 
+            alert("error"); 
+            break; 
+         } 
+       } 
 
         var estadoConexion = this.anotacionesService.estadoConex;
         if(estadoConexion)

@@ -3,15 +3,13 @@ import { NavController, ToastController, AlertController, LoadingController, Pop
 import { Cuenta } from '../../../model/cuenta/cuenta.model';
 import { Compra } from '../../../model/compra/compra.model';
 import { Detalle } from '../../../model/detalle/detalle.model';
-import { Producto } from '../../../model/producto/producto.model';
 //import { CuentaGeneral } from '../../../model/cuenta-general/cuenta-general.model';
 import { ProductoService } from '../../../services/producto.service'
 import { AnotacionesService } from '../../../services/anotaciones.service'
 //import { ComercioService } from '../../../services/comercio.service';
-import { BuscarCuentaPage } from "../../gestion-anotaciones/buscar-cuenta/buscar-cuenta";
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
-import { Observable } from 'rxjs/Observable';
 import { DatePipe } from '@angular/common';
+import { Storage } from '@ionic/storage';
 
 
 
@@ -42,8 +40,8 @@ export class Anotar {
    }];
 
    // lista de productos que tiene el comercio y el producto elegido en un detalle
-   listaProductos$: Observable<Producto[]>
-   productoDetalle$:Observable<Producto[]>
+   productoDetalleArray:any;
+   listadeProductosArray:any;
 
    // cuenta en la que anotaremos 
    cuenta: Cuenta;
@@ -71,7 +69,8 @@ export class Anotar {
      public alertCtrl: AlertController,
      public popoverCtrl: PopoverController,
      public navParams: NavParams,
-     public toastCtrl: ToastController
+     public toastCtrl: ToastController,
+     public storage: Storage
   	 ) 
 	  {
      // leemos el parametro y cargamos los valores en la variable valoresCuenta
@@ -93,20 +92,12 @@ export class Anotar {
 
 
   ionViewDidLoad() {
-       // traemos los productos del comercio
-       let loader = this.loading.create({  content: 'Pocesando…',  });
-       loader.present().then(() => {
-          
-           this.listaProductos$ = this.productoService.getListaCompleta()
-           .snapshotChanges().map(changes => {
-             return changes.map (c => ({
-             key: c.payload.key, ...c.payload.val()
-            }));
-          });   
 
-       // finalizo loader
-       loader.dismiss()                     
-       });
+
+     this.storage.get('productos').then((val) => {
+                               this.listadeProductosArray = val;
+                   });
+
   }
 
   
@@ -211,22 +202,16 @@ export class Anotar {
 
   // se ejecuta cuando elegimos el producto
  onChangeProducto(key,indice) {
-    this.productoDetalle$ = this.listaProductos$
-    .map( productos =>
-           productos.filter( prod => prod.key === key)
-      );
-    
-    this.productoDetalle$.subscribe(val => 
-      {
-        this.listaDetalle[indice].nombre_producto = val[0].nombre;
-        this.listaDetalle[indice].id_producto = val[0].key;
-        this.listaDetalle[indice].unidad = val[0].unidad;
-        this.listaDetalle[indice].precio = val[0].precio;
+    this.productoDetalleArray = this.listadeProductosArray.filter( prod => prod.key === key);
+
+        this.listaDetalle[indice].nombre_producto = this.productoDetalleArray[0].nombre;
+        this.listaDetalle[indice].id_producto = this.productoDetalleArray[0].key;
+        this.listaDetalle[indice].unidad = this.productoDetalleArray[0].unidad;
+        this.listaDetalle[indice].precio = this.productoDetalleArray[0].precio;
 
         // LLamaos a este metodo por si cambia el producto luego de ingresar la cantidad
         this.onChangeCantidad(indice);    
-      }
-    );
+    
   }
 
   onChangeEntrega(key,indice)

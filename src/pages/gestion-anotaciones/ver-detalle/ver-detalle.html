@@ -42,7 +42,7 @@
    <div  *ngIf="compra?.estado != 'anulada'">
     <ion-item *ngFor="let item of items">
       <ion-grid no-padding  >
-        <ion-row *ngIf="item.unidad != 'entrega'"  >
+        <ion-row *ngIf="item.unidad != 'entrega'  && item.unidad != 'actualiza'"  >
           <ion-col *ngIf="item.unidad != 'unidad'"  col-4 >
               {{item.cantidad}}  {{item.unidad}}.  
           </ion-col> 
@@ -67,6 +67,17 @@
              <label> ${{item.total_detalle | number:"1.0-2"}} </label>
           </ion-col>     
         </ion-row>
+
+        <ion-row *ngIf="item.unidad == 'actualiza'"  >
+          <ion-col  col-6 >
+             <label>Actualización</label>
+          </ion-col> 
+     
+          <ion-col col-6 text-right>
+             <label> ${{item.total_detalle | number:"1.0-2"}} </label>
+          </ion-col>     
+        </ion-row>
+
      </ion-grid>
      <hr style="margin-top: 0px;  margin-bottom: 0px;">
     </ion-item>
@@ -75,7 +86,7 @@
    <div  *ngIf="compra?.estado == 'anulada'">
     <ion-item *ngFor="let item of items">
       <ion-grid no-padding  >
-        <ion-row *ngIf="item.unidad != 'entrega'"  >
+        <ion-row *ngIf="item.unidad != 'entrega'  && item.unidad != 'actualiza'"  >
           <ion-col *ngIf="item.unidad != 'unidad'"  col-4 >
               <span style="text-decoration:line-through">   {{item.cantidad}}  {{item.unidad}}.</span>  
           </ion-col> 
@@ -100,6 +111,18 @@
              <label style="text-decoration:line-through; text-decoration:line-through"> ${{item.total_detalle | number:"1.0-2"}} </label>
           </ion-col>     
         </ion-row>
+
+
+        <ion-row *ngIf="item.unidad == 'actualiza'"  >
+          <ion-col  col-6 >
+             <label style="text-decoration:line-through">Actualización</label>
+          </ion-col> 
+     
+          <ion-col col-6 text-right>
+             <label style="text-decoration:line-through; text-decoration:line-through"> ${{item.total_detalle | number:"1.0-2"}} </label>
+          </ion-col>     
+        </ion-row>
+
      </ion-grid>
 
      <hr style="margin-top: 0px;  margin-bottom: 0px;">

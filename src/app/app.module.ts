@@ -72,6 +72,7 @@ import { registerLocaleData } from '@angular/common';
 registerLocaleData(localeEs);
 
 
+
 @NgModule({
   declarations: [
     MyApp,
