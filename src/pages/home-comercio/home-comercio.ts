@@ -1,6 +1,6 @@
 
 import {Component} from "@angular/core";
-import {NavController, PopoverController} from "ionic-angular";
+import {NavController, PopoverController, LoadingController} from "ionic-angular";
 import {Storage} from '@ionic/storage';
 
 import {ConfiguaracionesPage} from "../configuaraciones/configuaraciones";
@@ -28,7 +28,7 @@ export class HomeComercioPage {
   fecha: string;
   fecha_formateda: string;
 
-  constructor(private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController) {
+  constructor(    private storage: Storage, public nav: NavController, public popoverCtrl: PopoverController) {
      this.storage.get('usuario').then((val) => {
         this.usuario = val;
      });
@@ -36,13 +36,12 @@ export class HomeComercioPage {
     this.urlImagen = "assets/img/comercios/panaderia.jpg";
     this.fecha = new Date().toISOString();
     this.fecha_formateda = this.pipe.transform(this.fecha ,'dd/MM/yyyy');
- 
+
   }
 
   // Se ejecuta cuando entras en una página, antes de cargarla. Utilízalo para tareas que se deben realizar siempre que entras
-  ionViewWillEnter() {
+ 
 
-  }
 
   gestionMenuComercio(home)
   {

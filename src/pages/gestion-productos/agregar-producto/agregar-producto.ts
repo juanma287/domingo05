@@ -17,7 +17,7 @@ export class AgregarProductoPage {
     unidad: '',
     visible: true
    };
-
+  msjError: string;
 
   constructor(
   	public navCtrl: NavController,
@@ -29,10 +29,27 @@ export class AgregarProductoPage {
     public toastCtrl: ToastController
 
   	) {
+    this.msjError = '';
   }
 
 
   agregar(producto: Producto) {
+
+    // validamos que complete todos los campos
+    if(producto.nombre == "")
+    {
+      this.msjError = 'Complete el nombre del producto. ';
+    }
+    else if(producto.unidad == "")
+    {
+     this.msjError = 'Seleccione la unidad. ';
+    }
+    else if(producto.precio == 0)
+    {
+       this.msjError = 'El precio no puede ser 0 ';
+    }
+    else
+    {   
           // show message
       let toast = this.toastCtrl.create({
         message: 'Producto agregado!',
@@ -64,6 +81,8 @@ export class AgregarProductoPage {
         });
         alert.present();
      }  
+    }
+
   }
 
   onChange(value) {

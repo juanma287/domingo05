@@ -20,6 +20,10 @@ import { VerAnotacionesPage } from "../pages/gestion-anotaciones/ver-anotaciones
 import { AuthService } from '../services/auth.service';
 import { Usuario } from '../model/usuario/usuario.model';
 
+import { Observable } from 'rxjs/Observable';
+import { ProductoService } from '../services/producto.service';
+import { Producto } from '../model/producto/producto.model';
+
 
 export interface MenuItem {
     title: string;
@@ -37,6 +41,7 @@ export class MyApp {
   rootPage: any = LoginPage;
   appMenuItems: Array<MenuItem>;
   usuario: Usuario;
+  listaProductos$: Observable<Producto[]>
 
   constructor(
     public platform: Platform,
@@ -45,6 +50,7 @@ export class MyApp {
     public keyboard: Keyboard,
     private auth: AuthService,
     private storage: Storage, 
+    private productoService: ProductoService
   ) {
     this.initializeApp();
 
@@ -91,13 +97,27 @@ export class MyApp {
 
                           // verificamos si es cliente o trabaja en un comercio
                           if(this.usuario.id_comercio != "") 
-                            {
+                          {
+                              // tramos los productos del comercio
+
+                              this.listaProductos$ = this.productoService.getListaCompleta()
+                                 .snapshotChanges().map(changes => {
+                                   return changes.map (c => ({
+                                   key: c.payload.key, ...c.payload.val()
+                                }));
+                              });
+
+                              // almacenamos en localstorage los produsctos del comercio
+                              this.listaProductos$.subscribe(result => {     
+                                       this.storage.set('productos', result);
+                                });
+
                               this.rootPage = HomeComercioPage;
                              // this.auth.infoComercioBD(this.usuario.id_comercio)
                              // .subscribe(comercioBD => console.log(comercioBD))
-                            }
+                          }
                           else
-                           {
+                          {
                               // aca debería mandarlo a una pagina en blanco pidiedo activacion
                               this.rootPage = HomeComercioPage;
 

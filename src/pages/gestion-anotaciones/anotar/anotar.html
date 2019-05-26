@@ -16,13 +16,13 @@
   </ion-navbar>
 
     <ion-segment [(ngModel)]="operacion" >
-      <ion-segment-button value="anota">
+      <ion-segment-button value="anota" (click)="cambiaPestania()">
         Compra
       </ion-segment-button>
-      <ion-segment-button value="entrega">
+      <ion-segment-button value="entrega" (click)="cambiaPestania()">
         Entrega
       </ion-segment-button>
-      <ion-segment-button value="actualiza">
+      <ion-segment-button value="actualiza" (click)="cambiaPestania()">
         Actualiza
       </ion-segment-button>
     </ion-segment>
@@ -107,6 +107,10 @@
    </ion-grid>
   </ion-card>
 </div>
+
+    <div *ngIf="msjError != ''" class="error">
+          <label style="margin-left: 5px;"> {{msjError}}</label>
+     </div>
 
  <ion-grid *ngIf="operacion == 'anota'">
     <ion-row>

@@ -42,7 +42,9 @@
     </div>
   </div>
 
-    
+       <div *ngIf="msjError != ''" class="error">
+          <label> {{msjError}}</label>
+        </div>
     <br>
 
      <ion-grid>
