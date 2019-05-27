@@ -36,6 +36,7 @@ export class Anotar {
       precio: 0,
       cantidad: '',
       total_detalle: '',
+      porcentaje_saldado:0
    }];
 
    // lista de productos que tiene el comercio y el producto elegido en un detalle
@@ -59,7 +60,7 @@ export class Anotar {
    // lo usamos para las pestañas (ion-segment)
    operacion: string;
    msjError: string;
-
+   salda_el_total: boolean;
 
   constructor(
    	 public navCtrl: NavController,
@@ -86,6 +87,7 @@ export class Anotar {
      this.total_items = 1;
      this.operacion = "anota";
      this.msjError = '';
+     this.salda_el_total = false;
 
 	  }
       
@@ -108,6 +110,7 @@ export class Anotar {
       precio: 0,
       cantidad: '',
       total_detalle: '',
+      porcentaje_saldado: 0
    }];
    this.calcularTotalCompra();
  }
@@ -217,7 +220,8 @@ export class Anotar {
         cantidad:'',
         unidad:'',
         precio: 0,
-        total_detalle:0
+        total_detalle:0,
+        porcentaje_saldado:0
         }
     this.listaDetalle.push(detalle);   
     this.total_items = this.total_items +1; 
@@ -262,11 +266,14 @@ export class Anotar {
     this.listaDetalle[indice].precio = 1;
     if(key == "total")
     {
+        this.salda_el_total = true;
         this.listaDetalle[indice].cantidad = this.total_deuda;
         this.onChangeCantidad(indice);
+
     }
     else
     {
+      this.salda_el_total = false;
       this.listaDetalle[indice].cantidad = '';
     }
   }

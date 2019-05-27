@@ -10,5 +10,6 @@ export interface Cuenta {
     fecha_ultima_compra_number: number;
     fecha_alta: string;
     fecha_alta_number:number;
+    saldado_hasta_fecha:number;
 
 }

@@ -3,7 +3,6 @@ import { NavController,LoadingController,ToastController, NavParams,AlertControl
 import { Cuenta } from '../../../model/cuenta/cuenta.model';
 import { CuentaGeneral } from '../../../model/cuenta-general/cuenta-general.model';
 import { CuentaService } from '../../../services/cuenta.service';
-import { CuentaPage} from "../cuenta/cuenta";
 import { ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { DatePipe } from '@angular/common';
 
@@ -24,7 +23,8 @@ export class AgregarCuentaPage {
     fecha_ultima_compra: '',
     fecha_ultima_compra_number:0,
     fecha_alta: '',
-    fecha_alta_number: 0 
+    fecha_alta_number: 0,
+    saldado_hasta_fecha: 0 
     };
  
   public cuenta_general: CuentaGeneral = {
@@ -38,6 +38,7 @@ export class AgregarCuentaPage {
     fecha_ultima_compra_number:0,
     fecha_alta: '',
     fecha_alta_number: 0,
+    saldado_hasta_fecha: 0
    };
 
     pipe = new DatePipe('es'); 

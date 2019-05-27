@@ -6,4 +6,5 @@ export interface Detalle {
     precio: number;
     cantidad:any;
     total_detalle: any;
+    porcentaje_saldado: number;
 }
