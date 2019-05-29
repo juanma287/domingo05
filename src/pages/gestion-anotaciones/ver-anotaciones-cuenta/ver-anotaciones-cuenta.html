@@ -43,7 +43,7 @@
     <ion-item *ngFor="let compra of listaCompras$ | async" 
     (click)="verDetalle(compra)">
       <ion-grid no-padding >
-        <ion-row *ngIf="compra.estado == 'intacta'">
+        <ion-row *ngIf="compra.estado == 'intacta' || compra.estado == 'saldada'">
           <ion-col col-6>
             <span *ngIf="compra.tipo != 'entrega'"> {{compra.fecha_compra}} </span> 
             <span *ngIf="compra.tipo == 'entrega'" style="color: #3bbf3a;"> {{compra.fecha_compra}} </span> 

@@ -73,6 +73,7 @@ export class VerDetallePage {
 
   ejecutarAnulacion()
   {
+  
      var key_cuenta = this.cuenta.cuenta.key;
      var key_compra = this.compra.key;
      var total_deuda = this.cuenta.cuenta.total_deuda;
@@ -103,7 +104,7 @@ export class VerDetallePage {
             break; 
          }
          default: { 
-            alert("error"); 
+            alert("error: "+tipo_compra); 
             break; 
          } 
        } 

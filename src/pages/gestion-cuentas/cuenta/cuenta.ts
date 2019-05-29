@@ -8,6 +8,7 @@ import { EditarCuentaPage } from "../editar-cuenta/editar-cuenta";
 import { Observable } from 'rxjs/Observable';
 import { HomeComercioPage } from "../../home-comercio/home-comercio";
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
+import { Subscription } from 'rxjs/Subscription';
 
 
 
@@ -19,6 +20,7 @@ export class CuentaPage {
 
   listaCuentas$: Observable<Cuenta[]>
   cantidad: string 
+  SubscriptionCuenta: Subscription;
 
   constructor(
    	 public navCtrl: NavController,
@@ -41,14 +43,21 @@ export class CuentaPage {
     });
 	
     // calculamos la cantidad de cuentas
-    this.listaCuentas$.subscribe(result => {     
+    this.SubscriptionCuenta = this.listaCuentas$.subscribe(result => {
             this.cantidad = "CANTIDAD DE CUENTAS: "+ result.length +"";      
       });
 
+   
 	   // finalizo loader
     loader.dismiss()                     
     });
   }
+
+  // quitamos la suscripcion al observable
+  ngOnDestroy() {
+     this.SubscriptionCuenta.unsubscribe();
+  }
+
 
   agregar()
   {

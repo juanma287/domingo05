@@ -175,8 +175,18 @@ export class AnotacionesService {
 
     } 
 
-
-
+  // CASO 1: Es la primera vez que paga y salda el total (directamente actualizamos el estado de la compra, no entramos al detalle)
+  actulizarCASO1(key_cuenta, key_compra)
+  {
+      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra;
+      console.log(path);
+      let data =
+         { 
+           estado: "saldada",
+         }
+      return this.db.object(path).update(data);  
+  }
+  
     
 
 }

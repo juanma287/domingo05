@@ -8,6 +8,7 @@ import { VerDetallePage } from "../../gestion-anotaciones/ver-detalle/ver-detall
 import { Observable } from 'rxjs/Observable';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { DatePipe } from '@angular/common';
+import { Subscription } from 'rxjs/Subscription';
 
 
 @Component({
@@ -17,10 +18,10 @@ import { DatePipe } from '@angular/common';
 export class VerAnotacionesCuentaPage {
  
 
-   // lista de compras que tiene el comercio y el producto elegido en un detalle
+   // lista de compras de un cliente
    listaCompras$: Observable<Compra[]>
+   SubscriptionCompra: Subscription;
 
-   // cuenta en la que anotaremos 
    cuenta: Cuenta;
    valoresCuenta:any;
    key_cuenta:any;
@@ -50,7 +51,6 @@ export class VerAnotacionesCuentaPage {
      this.key_cuenta = this.valoresCuenta.key
      this.total_deuda = this.valoresCuenta.total_deuda;
 
-
     this.fecha = new Date().toISOString();
     this.fecha_formateda = this.pipe.transform(this.fecha ,'dd/MM/yyyy');
 
@@ -69,9 +69,9 @@ export class VerAnotacionesCuentaPage {
          }));
        });    
        // calculamos la cantidad de compras
-        this.listaCompras$.subscribe(result => {   
+        this.SubscriptionCompra = this.listaCompras$.subscribe(result => { 
               this.listadeComprasArray = result; 
-              this.cantidad = "CANTIDAD DE COMPRAS: "+ result.length +"";      
+              this.cantidad = "CANTIDAD DE MOVIMIENTOS: "+ result.length +"";      
         });
 
      
@@ -80,6 +80,10 @@ export class VerAnotacionesCuentaPage {
        });
   }
 
+  // quitamos la suscripcion al observable
+  ngOnDestroy() {
+      this.SubscriptionCompra.unsubscribe();
+  }
 
   // al seleccinar una comora mostramos el detalle de la misma
   verDetalle(compra: Compra)

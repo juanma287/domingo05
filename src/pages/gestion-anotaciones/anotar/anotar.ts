@@ -9,6 +9,8 @@ import { AnotacionesService } from '../../../services/anotaciones.service'
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { DatePipe } from '@angular/common';
 import { Storage } from '@ionic/storage';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 
 
@@ -17,7 +19,9 @@ import { Storage } from '@ionic/storage';
   templateUrl: 'anotar.html',
 })
 export class Anotar {
- 
+   SubscriptionCuenta: Subscription;
+
+
    public compra: Compra = {
       total_compra: 0,
       fecha_compra:'',
@@ -43,13 +47,14 @@ export class Anotar {
    productoDetalleArray:any;
    listadeProductosArray:any;
 
+
    // cuenta en la que anotaremos 
    cuenta: Cuenta;
    valoresCuenta:any;
    key_cuenta:any;
    total_deuda: any;
    total_items : number;
-   entrega: boolean; // si entrega o no entrega dinero
+   saldado_hasta_fecha: number; // hasta que fecha se encuentra saldada una cuenta 
     
    // fecha y monto de la compra 
    fechaParaHTML:string;
@@ -61,6 +66,9 @@ export class Anotar {
    operacion: string;
    msjError: string;
    salda_el_total: boolean;
+
+   // lista de compras de un cliente
+   listaCompras$: Observable<Compra[]>
 
   constructor(
    	 public navCtrl: NavController,
@@ -79,6 +87,7 @@ export class Anotar {
      this.valoresCuenta = this.valoresCuenta['0'];
      this.key_cuenta = this.valoresCuenta.key
      this.total_deuda = this.valoresCuenta.total_deuda;
+     this.saldado_hasta_fecha = this.valoresCuenta.saldado_hasta_fecha;
      
      this.fechaParaHTML = new Date().toISOString();
      this.fecha_compra = this.pipe.transform(this.fechaParaHTML ,'dd/MM/yyyy');
@@ -131,7 +140,7 @@ export class Anotar {
         });
           
        this.inicializarCompra();
-       if(this.msjError == '') // si no hay msj de error comenzamos a procesar la compra
+       if(this.msjError === '') // si no hay msj de error comenzamos a procesar la compra
         {
           let loader = this.loading.create({  content: 'Pocesando…',  });
           loader.present().then(() => {
@@ -148,12 +157,77 @@ export class Anotar {
               // actualizamos la cuenta del comercio y la cuenta general
               this.anotacionesService.actualizarCuentaComercio(this.key_cuenta, this.total_deuda, this.compra.total_compra, this.operacion, this.compra.fecha_compra,  this.compra.fecha_compra_number );
               this.anotacionesService.actualizarCuentaGeneral(this.key_cuenta, this.total_deuda,this.compra.total_compra, this.operacion, this.compra.fecha_compra, this.compra.fecha_compra_number);
-                   // finalizo loader
+              
+
+              // SI SE TRATA DE UNA ENTREGA, MARCAMOS LAS COMPRAS QUE CORRESPONDAN COMO PAGADAS
+              if(this.operacion === "entrega")
+              {
+
+               if(this.saldado_hasta_fecha === 0) // traemos todas las anotaciones de la cuenta xq es la primera vez que paga
+               {
+                 // traemos la lista de complas del cienente 
+                 this.listaCompras$ = this.anotacionesService.getCompras(this.key_cuenta)
+                     .snapshotChanges().map(changes => {
+                       return changes.map (c => ({
+                       key: c.payload.key, ...c.payload.val()
+                     }));
+                   });  
+
+
+      
+                 // CASO 1: Es la primera vez que paga y salda el total
+                 if(this.salda_el_total) 
+                 { 
+                    this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {    
+                      let length = result.length;
+                      for (var i = 0; i < length; ++i) 
+                      {
+                        if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
+                           this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
+                      }                  
+                     });                              
+                 }
+
+                 // CASO 2: Es la primera vez que paga y salda de forma parcial
+                 else
+                 {
+                      this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {    
+                      let auxMontoSaldado = this.monto_compra;
+                      let length = result.length;
+                      for (var i = length-1; i >= 0; --i) 
+                      {
+                        if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
+                          {
+                            if(auxMontoSaldado >= result[i].total_compra)
+                            {
+                             this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
+                             auxMontoSaldado = auxMontoSaldado - result[i].total_compra;
+                             console.log(result[i].fecha_compra);
+                             console.log(auxMontoSaldado);
+
+                            }
+                          }
+                        }
+                      }                  
+                    );  
+                 }
+
+                 
+
+
+                 // IMPORTANTE luego de debe actulizar la info de la cuenta :: el saldado hasta la fecha  
+               } 
+               
+             
+
+              }
+              // finalizo loader
               loader.dismiss(); 
               toast.present();   
+
               this.navCtrl.pop();
              } 
-               else
+             else
                {
                  alert("se produjo un error y no se almaceno la compra, vuelva a intentarlo");
                }           
@@ -172,6 +246,11 @@ export class Anotar {
      }  
   }
 
+  // quitamos la suscripcion al observable
+  ngOnDestroy() {
+      if(this.SubscriptionCuenta && !this.SubscriptionCuenta.closed)
+           this.SubscriptionCuenta.unsubscribe();    
+  }
   // completamos los datos de la compra
   inicializarCompra(){
      this.compra.total_compra = this.monto_compra;
