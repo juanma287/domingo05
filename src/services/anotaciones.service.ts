@@ -55,6 +55,17 @@ export class AnotacionesService {
       return listaCompras;
     }
 
+     // retorna el detalle de una compra
+    getDetalle(key_cuenta, key_compra)
+    {
+      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle';
+      console.log(path);
+      let listaDetalle = this.db.list<Detalle>(path); 
+      console.log(listaDetalle);
+      return listaDetalle;
+    }
+
+
     // retorna todos los detalles de una compra
       /* NO HACE FALTA
     getDetalle(key_cuenta, key_compra)
@@ -179,7 +190,6 @@ export class AnotacionesService {
   actulizarCASO1(key_cuenta, key_compra)
   {
       let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra;
-      console.log(path);
       let data =
          { 
            estado: "saldada",
@@ -187,6 +197,18 @@ export class AnotacionesService {
       return this.db.object(path).update(data);  
   }
   
+ actulizarCASO2(key_cuenta, key_compra, key_detalle, porcentaje_sald)
+ {
+
+    let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle/'+ key_detalle;
+    console.log(path);
+    let data =
+         { 
+           porcentaje_saldado: porcentaje_sald,
+         }
+      return this.db.object(path).update(data);  
+ }
+
     
 
 }

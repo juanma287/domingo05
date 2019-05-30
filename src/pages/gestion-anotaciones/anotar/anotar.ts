@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class Anotar {
    SubscriptionCuenta: Subscription;
-
+   SubscriptionDetalle: Subscription;
 
    public compra: Compra = {
       total_compra: 0,
@@ -69,6 +69,7 @@ export class Anotar {
 
    // lista de compras de un cliente
    listaCompras$: Observable<Compra[]>
+   listaDetalle$: Observable<Detalle[]>
 
   constructor(
    	 public navCtrl: NavController,
@@ -191,24 +192,69 @@ export class Anotar {
                  // CASO 2: Es la primera vez que paga y salda de forma parcial
                  else
                  {
-                      this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {    
+
+                      this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {  
                       let auxMontoSaldado = this.monto_compra;
                       let length = result.length;
+                        console.log(result);
                       for (var i = length-1; i >= 0; --i) 
                       {
                         if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
                           {
+                             console.log(auxMontoSaldado);
+                                                          console.log(result[i].total_compra);
+
                             if(auxMontoSaldado >= result[i].total_compra)
                             {
                              this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
                              auxMontoSaldado = auxMontoSaldado - result[i].total_compra;
-                             console.log(result[i].fecha_compra);
-                             console.log(auxMontoSaldado);
-
                             }
-                          }
-                        }
-                      }                  
+                            else // entramos al detalle
+                            {
+                              
+                                  console.log("entramos al detalle");
+                                 // la tildamos como saldada para que no pueda ser anulada
+                                 this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
+                                  // traemos el detalle
+                                  this.listaDetalle$ = this.anotacionesService.getDetalle(this.key_cuenta, result[i].key)
+                                     .snapshotChanges().map(changes => {
+                                       return changes.map (c => ({
+                                       key: c.payload.key, ...c.payload.val()
+                                     }));
+                                   });  
+
+                                   this.SubscriptionDetalle = this.listaDetalle$.subscribe(result2 => {    
+                                   let length2 = result2.length;
+
+                                   console.log(result2);
+                                   // recorremos el detalle y marcamos el porcentaje saldado
+                                   for (var j = 0; j < length2; ++j) 
+                                   {
+                                      if(auxMontoSaldado >= result2[j].total_detalle)
+                                      {
+                                        auxMontoSaldado = auxMontoSaldado - result2[j].total_detalle;
+                                        this.anotacionesService.actulizarCASO2(this.key_cuenta, result[i].key, result2[j].key, 100);
+                                      }
+                                      else
+                                      {
+                                        let porcentaje = auxMontoSaldado / result2[j].total_detalle
+                                        this.anotacionesService.actulizarCASO2(this.key_cuenta, result[i].key, result2[j].key, porcentaje);
+                                        break;
+                                      } 
+                                   }                  
+                                  });     
+
+               
+
+                          
+                                 // ver esto que no anda!! 
+
+                            
+                                
+                                 }
+                               } 
+                            }
+                          }           
                     );  
                  }
 
@@ -250,6 +296,10 @@ export class Anotar {
   ngOnDestroy() {
       if(this.SubscriptionCuenta && !this.SubscriptionCuenta.closed)
            this.SubscriptionCuenta.unsubscribe();    
+   
+       if(this.SubscriptionDetalle && !this.SubscriptionDetalle.closed)
+           this.SubscriptionDetalle.unsubscribe();   
+        
   }
   // completamos los datos de la compra
   inicializarCompra(){
