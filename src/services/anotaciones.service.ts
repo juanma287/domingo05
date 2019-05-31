@@ -61,7 +61,6 @@ export class AnotacionesService {
       let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle';
       console.log(path);
       let listaDetalle = this.db.list<Detalle>(path); 
-      console.log(listaDetalle);
       return listaDetalle;
     }
 
