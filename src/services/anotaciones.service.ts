@@ -59,7 +59,6 @@ export class AnotacionesService {
     getDetalle(key_cuenta, key_compra)
     {
       let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle';
-      console.log(path);
       let listaDetalle = this.db.list<Detalle>(path); 
       return listaDetalle;
     }
@@ -195,18 +194,40 @@ export class AnotacionesService {
          }
       return this.db.object(path).update(data);  
   }
+
+    // CASO 1: Es la primera vez que paga y salda el total (directamente actualizamos el estado de la compra, no entramos al detalle)
+ actulizarCASO2Compra(key_cuenta, key_compra)
+  {
+      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra;
+      let data =
+         { 
+           estado: "parcialmente saldada",
+         }
+      return this.db.object(path).update(data);  
+  }
   
- actulizarCASO2(key_cuenta, key_compra, key_detalle, porcentaje_sald)
+ actulizarCASO2Detalle(key_cuenta, key_compra, key_detalle, porcentaje_sald)
  {
 
     let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle/'+ key_detalle;
-    console.log(path);
     let data =
          { 
            porcentaje_saldado: porcentaje_sald,
          }
       return this.db.object(path).update(data);  
  }
+ 
+  actualizarSaldadoHastaFecha(key_cuenta, fecha_compra_number )
+  {
+
+      let path =  'lista-comercio/'+ this.key_comercio+'/cuentas/'+ key_cuenta;
+      let data =
+         { 
+           saldado_hasta_fecha: fecha_compra_number
+         }
+      return this.db.object(path).update(data); 
+
+  }
 
     
 

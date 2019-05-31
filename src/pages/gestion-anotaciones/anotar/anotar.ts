@@ -71,16 +71,16 @@ export class Anotar {
    listaDetalle$: Observable<Detalle[]>
 
   constructor(
-   	 public navCtrl: NavController,
+      public navCtrl: NavController,
      private anotacionesService: AnotacionesService,
-  	 public loading: LoadingController,
+     public loading: LoadingController,
      public alertCtrl: AlertController,
      public popoverCtrl: PopoverController,
      public navParams: NavParams,
      public toastCtrl: ToastController,
      public storage: Storage
-  	 ) 
-	  {
+     ) 
+    {
      // leemos el parametro y cargamos los valores en la variable valoresCuenta
      this.cuenta = this.navParams.data;
      this.valoresCuenta = (<any>Object).values(this.cuenta);
@@ -98,7 +98,7 @@ export class Anotar {
      this.msjError = '';
      this.salda_el_total = false;
 
-	  }
+    }
       
 
 
@@ -154,111 +154,103 @@ export class Anotar {
               {
                 this.anotacionesService.agregarDetalle(this.key_cuenta, key_compra,this.listaDetalle[i]);
               }
-              // actualizamos la cuenta del comercio y la cuenta general
+              // actualizamos la cuenta del comercio 
               this.anotacionesService.actualizarCuentaComercio(this.key_cuenta, this.total_deuda, this.compra.total_compra, this.operacion, this.compra.fecha_compra,  this.compra.fecha_compra_number );
-              this.anotacionesService.actualizarCuentaGeneral(this.key_cuenta, this.total_deuda,this.compra.total_compra, this.operacion, this.compra.fecha_compra, this.compra.fecha_compra_number);
               
-
               // SI SE TRATA DE UNA ENTREGA, MARCAMOS LAS COMPRAS QUE CORRESPONDAN COMO PAGADAS
               if(this.operacion === "entrega")
               {
 
                if(this.saldado_hasta_fecha === 0) // traemos todas las anotaciones de la cuenta xq es la primera vez que paga
                {
-                 // traemos la lista de complas del cienente 
-                 this.listaCompras$ = this.anotacionesService.getCompras(this.key_cuenta)
-                     .snapshotChanges().map(changes => {
-                       return changes.map (c => ({
-                       key: c.payload.key, ...c.payload.val()
-                     }));
-                   });  
+                   // traemos la lista de complas del cienente 
+                   this.listaCompras$ = this.anotacionesService.getCompras(this.key_cuenta)
+                       .snapshotChanges().map(changes => {
+                         return changes.map (c => ({
+                         key: c.payload.key, ...c.payload.val()
+                       }));
+                     });  
 
 
-      
-                 // CASO 1: Es la primera vez que paga y salda el total
-                 if(this.salda_el_total) 
-                 { 
-                    this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {    
-                      let length = result.length;
-                      for (var i = 0; i < length; ++i) 
-                      {
-                        if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
-                           this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
-                      }                  
-                     });                              
-                 }
-
-                 // CASO 2: Es la primera vez que paga y salda de forma parcial
-                 else
-                 {
-
-                      this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {  
-                      let auxMontoSaldado = this.monto_compra;
-                      let length = result.length;
-                      for (var i = length-1; i >= 0; --i) 
-                      {
-                        if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
-                          {              
-                            if(auxMontoSaldado >= result[i].total_compra)
-                            {
+        
+                   // CASO 1: Es la primera vez que paga y salda el total
+                   if(this.salda_el_total) 
+                   { 
+                      this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {    
+                        let length = result.length;
+                        for (var i = 0; i < length; ++i) 
+                        {
+                          if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
                              this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
-                             auxMontoSaldado = auxMontoSaldado - result[i].total_compra;
-                            }
-                            else // entramos al detalle
-                            {
-                              
-                                 // la tildamos como saldada para que no pueda ser anulada
-                                 this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
-                                  // traemos el detalle
-                                  let key_compra = result[i].key;
-                                  this.listaDetalle$ = this.anotacionesService.getDetalle(this.key_cuenta, result[i].key)
-                                     .snapshotChanges().map(changes => {
-                                       return changes.map (c => ({
-                                       key: c.payload.key, ...c.payload.val()
-                                     }));
-                                   });  
+                        }                  
+                       });                              
+                   }
 
-                                   this.listaDetalle$.subscribe(result2 => {  
+                   // CASO 2: Es la primera vez que paga y salda de forma parcial
+                   else
+                   {
 
-                                   let length2 = result2.length;
-                                   // recorremos el detalle y marcamos el porcentaje saldado
-                                   for (var j = 0; j < length2; ++j) 
-                                   {
-                                      if(auxMontoSaldado >= result2[j].total_detalle)
-                                      {
-                                        auxMontoSaldado = auxMontoSaldado - result2[j].total_detalle;
-                                        this.anotacionesService.actulizarCASO2(this.key_cuenta, key_compra, result2[j].key, 100);
-                                      }
-                                      else
-                                      {
-                                        let porcentaje = auxMontoSaldado / result2[j].total_detalle
-                                        this.anotacionesService.actulizarCASO2(this.key_cuenta, key_compra, result2[j].key, porcentaje);
-                                        break;
-                                      } 
-                                   }                  
-                                  });     
-
-               
-
-                          
-                                 // ver esto que no anda!! 
-
-                            
+                        this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {  
+                        let auxMontoSaldado = this.monto_compra;
+                        let length = result.length;
+                        for (var i = length-1; i >= 0; --i) 
+                        {
+                          if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
+                            {              
+                              if(auxMontoSaldado >= result[i].total_compra)
+                              {
+                               this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
+                               auxMontoSaldado = auxMontoSaldado - result[i].total_compra;
+                              }
+                              else // entramos al detalle
+                              {
                                 
-                                 }
-                               } 
-                            }
-                          }           
-                    );  
-                 }
+                                   // la tildamos como saldada para que no pueda ser anulada
+                                   this.anotacionesService.actulizarCASO2Compra(this.key_cuenta, result[i].key);
+                                    // traemos el detalle
+                                    let key_compra = result[i].key;
+                                    this.listaDetalle$ = this.anotacionesService.getDetalle(this.key_cuenta, result[i].key)
+                                       .snapshotChanges().map(changes => {
+                                         return changes.map (c => ({
+                                         key: c.payload.key, ...c.payload.val()
+                                       }));
+                                     });  
 
-                 
+                                     this.listaDetalle$.subscribe(result2 => {  
 
-
-                 // IMPORTANTE luego de debe actulizar la info de la cuenta :: el saldado hasta la fecha  
+                                     let length2 = result2.length;
+                                     // recorremos el detalle y marcamos el porcentaje saldado
+                                     for (var j = 0; j < length2; ++j) 
+                                     {
+                                        if(auxMontoSaldado >= result2[j].total_detalle)
+                                        {
+                                          auxMontoSaldado = auxMontoSaldado - result2[j].total_detalle;
+                                          this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result2[j].key, 100);
+                                        }
+                                        else
+                                        {
+                                          let porcentaje = auxMontoSaldado / result2[j].total_detalle
+                                          this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result2[j].key, porcentaje);
+                                          break;
+                                        } 
+                                     }                  
+                                    });    
+                                  
+                                   }
+                                 } 
+                              }
+                            }           
+                      );  
+                   }           
+                 // Actualizamos la cuenta :: el saldado hasta la fecha  
+                 this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta, this.compra.fecha_compra_number );
                } 
-               
-             
+               else  // CASO 3: Si no es la primera vez que paga
+               { 
+
+
+               console.log("CASO 3");
+               }             
 
               }
               // finalizo loader
