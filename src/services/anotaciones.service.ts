@@ -4,7 +4,6 @@ import { AngularFireDatabase} from 'angularfire2/database';
 import { Compra } from '../model/compra/compra.model';
 import { Detalle } from '../model/detalle/detalle.model';
 
-import { CuentaGeneral } from '../model/cuenta-general/cuenta-general.model';
 
 import { Storage } from '@ionic/storage';
 import { Usuario } from '../model/usuario/usuario.model';
@@ -114,16 +113,6 @@ export class AnotacionesService {
        return this.db.object(path).update(data); 
     }
 
-    actualizarCuentaGeneralCompraAnulada(key_cuenta, total_deuda_nuevo)
-    {
-       let path =  'lista-cuenta/'+ this.key_comercio+'/'+ key_cuenta;
-       let data =
-         { 
-           total_deuda: total_deuda_nuevo,
-         }
-       return this.db.object(path).update(data); 
-
-    }
 
 
     // actualizamos el total de la deuda en la cuenta que tiene alamcenada el comercio
@@ -155,34 +144,6 @@ export class AnotacionesService {
 
     } 
 
-    // actualizamos el total de la deuda en la cuenta general
-    actualizarCuentaGeneral(key_cuenta, total_deuda_cuenta, monto_compra, tipo,  fecha_compra, fecha_compra_number) {   
-                      
-      let path =  'lista-cuenta/'+ this.key_comercio+'/'+ key_cuenta;
-      if(tipo == 'entrega') // si es entrega
-      {
-        let data =
-         { 
-           total_deuda: total_deuda_cuenta - monto_compra,
-           fecha_ultimo_pago: fecha_compra,
-           fecha_ultimo_pago_number: fecha_compra_number
-         }
-        return this.db.object(path).update(data); 
-
-      }
-      else  // si anota 
-      {
-        let data = 
-         { 
-           total_deuda: total_deuda_cuenta + monto_compra,
-           fecha_ultima_compra: fecha_compra,
-           fecha_ultima_compra_number: fecha_compra_number
-         }
-        return this.db.object(path).update(data); 
-      }
-
-
-    } 
 
   // CASO 1: Es la primera vez que paga y salda el total (directamente actualizamos el estado de la compra, no entramos al detalle)
   actulizarCASO1(key_cuenta, key_compra)
@@ -194,6 +155,7 @@ export class AnotacionesService {
          }
       return this.db.object(path).update(data);  
   }
+
 
     // CASO 1: Es la primera vez que paga y salda el total (directamente actualizamos el estado de la compra, no entramos al detalle)
  actulizarCASO2Compra(key_cuenta, key_compra)

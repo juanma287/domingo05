@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController,LoadingController,ToastController, NavParams,AlertController, PopoverController} from 'ionic-angular';
 import { Cuenta } from '../../../model/cuenta/cuenta.model';
-import { CuentaGeneral } from '../../../model/cuenta-general/cuenta-general.model';
 import { CuentaService } from '../../../services/cuenta.service';
 import { ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { DatePipe } from '@angular/common';
@@ -27,19 +26,6 @@ export class AgregarCuentaPage {
     saldado_hasta_fecha: 0 
     };
  
-  public cuenta_general: CuentaGeneral = {
-    id_cliente:'',
-    id_comercio:'',
-    nombre:'',
-    total_deuda: 0,  
-    fecha_ultimo_pago: '',
-    fecha_ultimo_pago_number: 0,
-    fecha_ultima_compra: '',
-    fecha_ultima_compra_number:0,
-    fecha_alta: '',
-    fecha_alta_number: 0,
-    saldado_hasta_fecha: 0
-   };
 
     pipe = new DatePipe('es'); 
     hoy = new Date().getTime();
@@ -60,9 +46,6 @@ export class AgregarCuentaPage {
      // se pone negativa para poder ordenar desendente con firebase
      this.cuenta.fecha_alta_number = this.hoy * -1;
 
-     this.cuenta_general.fecha_alta = this.cuenta.fecha_alta;
-     this.cuenta_general.fecha_alta_number = this.cuenta.fecha_alta_number;
-     this.cuenta_general.id_comercio = this.cuentaService.usuario.id_comercio;
   }
 
 
@@ -82,15 +65,10 @@ export class AgregarCuentaPage {
         loader.present().then(() => {
           this.cuentaService.agregar(cuenta).then(ref => { 
 
-                 // luego de que el comercio crea una cuenta, la misma se replica en la lista de cuentas generales
-                 this.cuenta_general.nombre = cuenta.nombre;
-                 this.cuentaService.agregarCuentaGeneral(ref.key,this.cuenta_general).then(ref => {    
-
                       loader.dismiss();
                       toast.present();  
-                      this.navCtrl.pop();
-                               
-                 })                           
+                      this.navCtrl.pop();                    
+                                      
             })  
         });             
      }

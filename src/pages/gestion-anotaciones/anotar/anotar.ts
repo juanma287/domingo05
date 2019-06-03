@@ -3,7 +3,6 @@ import { NavController, ToastController, AlertController, LoadingController, Pop
 import { Cuenta } from '../../../model/cuenta/cuenta.model';
 import { Compra } from '../../../model/compra/compra.model';
 import { Detalle } from '../../../model/detalle/detalle.model';
-//import { CuentaGeneral } from '../../../model/cuenta-general/cuenta-general.model';
 import { AnotacionesService } from '../../../services/anotaciones.service'
 //import { ComercioService } from '../../../services/comercio.service';
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
@@ -54,6 +53,8 @@ export class Anotar {
    total_deuda: any;
    total_items : number;
    saldado_hasta_fecha: number; // hasta que fecha se encuentra saldada una cuenta 
+   saldado_hasta_fecha_new: number; // hasta que fecha se encuentra saldada una cuenta luego de una ENTREGA
+
     
    // fecha y monto de la compra 
    fechaParaHTML:string;
@@ -88,7 +89,8 @@ export class Anotar {
      this.key_cuenta = this.valoresCuenta.key
      this.total_deuda = this.valoresCuenta.total_deuda;
      this.saldado_hasta_fecha = this.valoresCuenta.saldado_hasta_fecha;
-     
+     this.saldado_hasta_fecha_new = 0; // hasta que fecha se encuentra saldada una cuenta luego de una ENTREGA
+      
      this.fechaParaHTML = new Date().toISOString();
      this.fecha_compra = this.pipe.transform(this.fechaParaHTML ,'dd/MM/yyyy');
      this.fecha_compra_number = new Date(this.fechaParaHTML).getTime();
@@ -181,9 +183,16 @@ export class Anotar {
                         for (var i = 0; i < length; ++i) 
                         {
                           if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
+                          {
                              this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
-                        }                  
-                       });                              
+                            // en este caso tomamos la fecha de la ultima compra                         
+                          }
+                        }
+
+                        this.saldado_hasta_fecha_new = result[0].fecha_compra_number;
+                        // Actualizamos la cuenta :: el saldado hasta la fecha                                               
+                        this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta,this.saldado_hasta_fecha_new );                  
+                       });               
                    }
 
                    // CASO 2: Es la primera vez que paga y salda de forma parcial
@@ -201,23 +210,25 @@ export class Anotar {
                               {
                                this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
                                auxMontoSaldado = auxMontoSaldado - result[i].total_compra;
+                               this.saldado_hasta_fecha_new = result[i].fecha_compra_number;
                               }
-                              else // entramos al detalle
+                              else // ENTRAMOS AL DETALLE
                               {
-                                
-                                   // la tildamos como saldada para que no pueda ser anulada
-                                   this.anotacionesService.actulizarCASO2Compra(this.key_cuenta, result[i].key);
-                                    // traemos el detalle
                                     let key_compra = result[i].key;
+                                    this.saldado_hasta_fecha_new = result[i].fecha_compra_number;
+                                    // la tildamos como saldada para que no pueda ser anulada
+                                    this.anotacionesService.actulizarCASO2Compra(this.key_cuenta, key_compra);                    
+                                  
+                                    // traemos el detalle
                                     this.listaDetalle$ = this.anotacionesService.getDetalle(this.key_cuenta, result[i].key)
                                        .snapshotChanges().map(changes => {
                                          return changes.map (c => ({
                                          key: c.payload.key, ...c.payload.val()
                                        }));
                                      });  
-
+                                     
+                                     // ENTRAMOS AL DETALLE
                                      this.listaDetalle$.subscribe(result2 => {  
-
                                      let length2 = result2.length;
                                      // recorremos el detalle y marcamos el porcentaje saldado
                                      for (var j = 0; j < length2; ++j) 
@@ -239,11 +250,12 @@ export class Anotar {
                                    }
                                  } 
                               }
+                              // Actualizamos la cuenta :: el saldado hasta la fecha                                               
+                              this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta,this.saldado_hasta_fecha_new );
                             }           
                       );  
                    }           
-                 // Actualizamos la cuenta :: el saldado hasta la fecha  
-                 this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta, this.compra.fecha_compra_number );
+
                } 
                else  // CASO 3: Si no es la primera vez que paga
                { 

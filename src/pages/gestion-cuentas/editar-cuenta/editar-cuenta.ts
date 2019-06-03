@@ -44,13 +44,10 @@ export class EditarCuentaPage {
      loader.present().then(() => {
 
             this.cuentaService.actualizar(cuenta).then(() => {
-            // acutalizamos tambien la info en cuenta-general
-            this.cuentaService.actualizarCuentaGeneral(cuenta.key, cuenta.nombre).then(ref => {
              // finalizo loader
              loader.dismiss(); 
              toast.present();   
-             this.navCtrl.pop();
-            })           
+             this.navCtrl.pop();                  
           })                   
     });
   }
@@ -83,12 +80,10 @@ export class EditarCuentaPage {
                loader.present().then(() => {
 
                    this.cuentaService.eliminar(cuenta).then(() => {
-                   this.cuentaService.eliminarCuentaGeneral(cuenta.key).then(ref => {
                        // finalizo loader
                        loader.dismiss();
                        toast.present();  
                        this.navCtrl.pop();
-                    })           
                   })
                });
           }

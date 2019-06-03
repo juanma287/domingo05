@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase} from 'angularfire2/database';
 import { Cuenta } from '../model/cuenta/cuenta.model';
-import { CuentaGeneral } from '../model/cuenta-general/cuenta-general.model';
 import { Storage } from '@ionic/storage';
 import { Usuario } from '../model/usuario/usuario.model';
 
@@ -41,8 +40,6 @@ export class CuentaService {
                    this.url ='lista-comercio/'+ this.usuario.id_comercio +'/cuentas';
                    this.listaCuentasComercio = this.db.list<Cuenta>(this.url); 
 
-                   this.listaCuentasGeneral = this.db.list<CuentaGeneral>('lista-cuenta/'+this.usuario.id_comercio +'/',  
-                   ref => ref.orderByChild('fecha_alta_number')); 
                   
                    // MODIFICAR LA FORMA DE ALMACENAR LA FECHA YA QUE NO LAS COMPARA BIEN
 
@@ -90,44 +87,5 @@ export class CuentaService {
       
         return this.listaCuentasComercio.remove(cuenta.key);
     }
-
-
-    // MÉTODOS PARA CUENTA GENERAL
-    getCuentasGeneral() {
-        
-        return this.listaCuentasGeneral;
-    }
-
-    agregarCuentaGeneral(key_cuenta, cuenta_general: CuentaGeneral) {   
-            
-            let path =  'lista-cuenta/'+ this.usuario.id_comercio +'/'+ key_cuenta;
-            return this.db.object(path).set(cuenta_general);      
-       
-    }
-
-    actualizarCuentaGeneral(key_cuenta, nombre) {   
-                      
-      let path =  'lista-cuenta/'+ this.usuario.id_comercio +'/'+ key_cuenta;
-      let data = {
-                  nombre: nombre
-                 }
-
-      return this.db.object(path).update(data);
-       
-    } 
-
-
-    // solo cargamos una fecha de baja
-    eliminarCuentaGeneral(key_cuenta) {         
-             
-      let path =  'lista-cuenta/'+ this.usuario.id_comercio +'/'+ key_cuenta;
-      let data = {
-                  fecha_baja: new Date().toLocaleString()
-                 }
-
-      return this.db.object(path).update(data);
-       
-    } 
-
 
 }

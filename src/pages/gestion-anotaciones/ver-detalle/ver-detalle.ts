@@ -119,7 +119,6 @@ export class VerDetallePage {
                  
                  // Luego de anular la compra acutalizamos la cuenta 
                  this.anotacionesService.actualizarCuentaCompraAnulada(key_cuenta, total_deuda_nuevo);
-                 this.anotacionesService.actualizarCuentaGeneralCompraAnulada(key_cuenta, total_deuda_nuevo);
             
                 // finalizo loader
                  loader.dismiss(); 
