@@ -54,6 +54,14 @@ export class AnotacionesService {
       return listaCompras;
     }
 
+    getComprasNoSaldadas(key_cuenta, fecha_saldado_hasta)
+    {
+      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta;
+      let listaCompras = this.db.list<Compra>(path,
+              ref => ref.orderByChild('fecha_compra_number').endAt(fecha_saldado_hasta)); 
+      return listaCompras;
+    }
+
      // retorna el detalle de una compra
     getDetalle(key_cuenta, key_compra)
     {
@@ -62,17 +70,6 @@ export class AnotacionesService {
       return listaDetalle;
     }
 
-
-    // retorna todos los detalles de una compra
-      /* NO HACE FALTA
-    getDetalle(key_cuenta, key_compra)
-    {
-      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle';
-      let listaDetalle = this.db.list<Detalle>(path); 
-      return listaDetalle;
-    }
-    */
- 
     agregarCompra(key_cuenta, compra: Compra) {  
 
            let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta;
@@ -158,12 +155,13 @@ export class AnotacionesService {
 
 
     // CASO 1: Es la primera vez que paga y salda el total (directamente actualizamos el estado de la compra, no entramos al detalle)
- actulizarCASO2Compra(key_cuenta, key_compra)
+ actulizarCASO2Compra(key_cuenta, key_compra, faltaSaldar)
   {
       let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra;
       let data =
          { 
            estado: "parcialmente saldada",
+           falta_saldar: faltaSaldar,
          }
       return this.db.object(path).update(data);  
   }
@@ -172,6 +170,8 @@ export class AnotacionesService {
  {
 
     let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle/'+ key_detalle;
+    console.log(path);
+    console.log(porcentaje_sald);
     let data =
          { 
            porcentaje_saldado: porcentaje_sald,
@@ -180,7 +180,7 @@ export class AnotacionesService {
  }
  
   actualizarSaldadoHastaFecha(key_cuenta, fecha_compra_number )
-  {
+  { 
 
       let path =  'lista-comercio/'+ this.key_comercio+'/cuentas/'+ key_cuenta;
       let data =

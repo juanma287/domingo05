@@ -1,7 +1,6 @@
 import { Component} from '@angular/core';
 import { NavController, LoadingController, PopoverController} from 'ionic-angular';;
 import { Cuenta } from '../../../model/cuenta/cuenta.model';
-import { CuentaGeneral } from '../../../model/cuenta-general/cuenta-general.model';
 import { CuentaService } from '../../../services/cuenta.service'
 import { ComercioService } from '../../../services/comercio.service';
 import { AgregarCuentaPage } from "../../gestion-cuentas/agregar-cuenta/agregar-cuenta";
@@ -19,7 +18,6 @@ import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 })
 export class BuscarCuentaPage {
 
-  listaCuentasGenerales$: Observable<CuentaGeneral[]>
   listaCuentas$: Observable<Cuenta[]>
   cantidad: string 
   items$: Observable<Cuenta[]>
