@@ -6,4 +6,5 @@ export interface Compra {
     estado: string;
     tipo: string;
     observacion: string;
+    falta_saldar?: number;
 }
