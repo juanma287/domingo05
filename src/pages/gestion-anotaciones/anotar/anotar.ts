@@ -55,7 +55,7 @@ export class Anotar {
    total_items : number;
    saldado_hasta_fecha: number; // hasta que fecha se encuentra saldada una cuenta 
    saldado_hasta_fecha_new: number; // hasta que fecha se encuentra saldada una cuenta luego de una ENTREGA
-
+   auxMontoSaldado:number;
     
    // fecha y monto de la compra 
    fechaParaHTML:string;
@@ -163,7 +163,6 @@ export class Anotar {
               // SI SE TRATA DE UNA ENTREGA, MARCAMOS LAS COMPRAS QUE CORRESPONDAN COMO PAGADAS
               if(this.operacion === "entrega")
               {
-
                if(this.saldado_hasta_fecha === 0) // traemos todas las anotaciones de la cuenta xq es la primera vez que paga
                {
                    // traemos la lista de TODAS las complas del cienente 
@@ -172,95 +171,18 @@ export class Anotar {
                          return changes.map (c => ({
                          key: c.payload.key, ...c.payload.val()
                        }));
-                     });  
+                     });                    
         
                    // CASO 1: Es la primera vez que paga y salda el total
                    if(this.salda_el_total) 
                    { 
-                      this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {    
-                        let length = result.length;
-                        for (var i = 0; i < length; ++i) 
-                        {
-                          if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
-                          {
-                             this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
-                            // en este caso tomamos la fecha de la ultima compra                         
-                          }
-                        }
-
-                        this.saldado_hasta_fecha_new = result[0].fecha_compra_number;
-                        // Actualizamos la cuenta :: el saldado hasta la fecha                                               
-                        this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta,this.saldado_hasta_fecha_new );                  
-                       });               
+                     this.caso1();              
                    }
-
                    // CASO 2: Es la primera vez que paga y salda de forma parcial
                    else
                    {
-                        this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {  
-                        let auxMontoSaldado = this.monto_compra;
-                        let length = result.length;
-                        for (var i = length-1; i >= 0; --i) 
-                        {
-                      
-                          if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
-                            {              
-                              if(auxMontoSaldado >= result[i].total_compra)
-                              {
-                               this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
-                               auxMontoSaldado = auxMontoSaldado - result[i].total_compra;
-                               this.saldado_hasta_fecha_new = result[i].fecha_compra_number;
-                              }
-                              else // ENTRAMOS AL DETALLE
-                              {
-                                    let key_compra = result[i].key;
-                                    this.saldado_hasta_fecha_new = result[i].fecha_compra_number;
-                                      
-                                  
-                                    // traemos el detalle
-                                    this.listaDetalle$ = this.anotacionesService.getDetalle(this.key_cuenta, result[i].key)
-                                       .snapshotChanges().map(changes => {
-                                         return changes.map (c => ({
-                                         key: c.payload.key, ...c.payload.val()
-                                       }));
-                                     });  
-                                     
-                                     // ENTRAMOS AL DETALLE
-                                     this.listaDetalle$.pipe(take(1)).subscribe(result2 => {  
-                                     let length2 = result2.length;
-                                     let faltaSaldar = 0;
-                                     // recorremos el detalle y marcamos el porcentaje saldado
-
-                                     for (var j = 0; j < length2; ++j) 
-                                      {
-
-                                        if(auxMontoSaldado >= result2[j].total_detalle)
-                                        {
-                                          auxMontoSaldado = auxMontoSaldado - result2[j].total_detalle;
-                                          this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result2[j].key, 100);
-                                        }
-                                        else
-                                        {
-                                          let porcentaje = auxMontoSaldado / result2[j].total_detalle;
-                                          auxMontoSaldado = 0;
-                                          faltaSaldar += (1 - porcentaje) * result2[j].total_detalle;
-                                          this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result2[j].key, porcentaje);
-                                        } 
-                                      }  
-                                    // la tildamos como saldada para que no pueda ser anulada
-                                    this.anotacionesService.actulizarCASO2Compra(this.key_cuenta, key_compra, faltaSaldar);   
-
-                                    });    
-                                  
-                                   }
-                                 } 
-                              }
-                              // Actualizamos la cuenta :: el saldado hasta la fecha                                               
-                              this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta,this.saldado_hasta_fecha_new );
-                            }           
-                      );  
+                     this.caso2(); 
                    }           
-
                } 
                else  // No es la primera vez que paga
                {      
@@ -295,23 +217,23 @@ export class Anotar {
                    else
                    {
                         this.SubscriptionCuenta = this.listaCompras$.subscribe(result4 => {  
-                        let auxMontoSaldado = this.monto_compra;
+                        this.auxMontoSaldado = this.monto_compra;
                         let length = result4.length;
                         for (var i = length-1; i >= 0; --i) 
                         {
                           if((result4[i].estado == "intacta" || result4[i].estado == "parcialmente saldada") && (result4[i].tipo == "anota" || result4[i].tipo == "actualiza"))
                            {  
 
-                              if(auxMontoSaldado >= result4[i].total_compra)
+                              if(this.auxMontoSaldado >= result4[i].total_compra)
                               {
                                this.anotacionesService.actulizarCASO1(this.key_cuenta, result4[i].key);
                                if(result4[i].estado == "parcialmente saldada")
                                {
-                                 auxMontoSaldado = auxMontoSaldado - result4[i].falta_saldar;
+                                 this.auxMontoSaldado = this.auxMontoSaldado - result4[i].falta_saldar;
                                }
                                else
                                {
-                                 auxMontoSaldado = auxMontoSaldado - result4[i].total_compra;
+                                 this.auxMontoSaldado = this.auxMontoSaldado - result4[i].total_compra;
                                }
                                this.saldado_hasta_fecha_new = result4[i].fecha_compra_number;
                               }
@@ -339,15 +261,15 @@ export class Anotar {
                                         {
                                           if(result5[j].porcentaje_saldado != 100)  
                                           {
-                                            if(auxMontoSaldado >= ((1 - result5[j].porcentaje_saldado) * result5[j].total_detalle))
+                                            if(this.auxMontoSaldado >= ((1 - result5[j].porcentaje_saldado) * result5[j].total_detalle))
                                             {
-                                              auxMontoSaldado = auxMontoSaldado - ((1 - result5[j].porcentaje_saldado) * result5[j].total_detalle);
+                                              this.auxMontoSaldado = this.auxMontoSaldado - ((1 - result5[j].porcentaje_saldado) * result5[j].total_detalle);
                                               this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result5[j].key, 100);
                                             }
                                             else
                                             {
-                                              let porcentaje = (auxMontoSaldado / result5[j].total_detalle) + result5[j].porcentaje_saldado;
-                                              auxMontoSaldado = 0;
+                                              let porcentaje = (this.auxMontoSaldado / result5[j].total_detalle) + result5[j].porcentaje_saldado;
+                                              this.auxMontoSaldado = 0;
                                               faltaSaldar += (1 - porcentaje) * result5[j].total_detalle;
                                               this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result5[j].key, porcentaje);
                                             }       
@@ -398,13 +320,100 @@ export class Anotar {
   // quitamos la suscripcion al observable
   ngOnDestroy() {
 
-     
-
       if(this.SubscriptionCuenta && !this.SubscriptionCuenta.closed)
-           this.SubscriptionCuenta.unsubscribe();    
-   
-        
+           this.SubscriptionCuenta.unsubscribe();            
   }
+
+  // CASO 1: Es la primera vez que paga y salda el total
+  caso1()  
+  {
+      this.SubscriptionCuenta = this.listaCompras$.subscribe(result => {    
+                        let length = result.length;
+                        for (var i = 0; i < length; ++i) 
+                        {
+                          if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
+                          {
+                             this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
+                            // en este caso tomamos la fecha de la ultima compra                         
+                          }
+                        }
+
+                        this.saldado_hasta_fecha_new = result[0].fecha_compra_number;
+                        // Actualizamos la cuenta :: el saldado hasta la fecha                                               
+                        this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta,this.saldado_hasta_fecha_new );                  
+                       });  
+  }
+
+  // CASO 2: Es la primera vez que paga y salda de forma parcial
+  caso2() 
+  {
+      this.SubscriptionCuenta = this.listaCompras$.pipe(take(1)).subscribe(result => {  
+                        this.auxMontoSaldado = this.monto_compra;
+                        let length = result.length;
+                        let ingresoAldetalle = false;
+
+                        for (var i = length-1; i >= 0; --i) 
+                        {
+                      
+                          if(result[i].estado == "intacta" && (result[i].tipo == "anota" || result[i].tipo == "actualiza"))
+                            {  
+                                  
+                              if(this.auxMontoSaldado >= result[i].total_compra)
+                              {
+                               this.anotacionesService.actulizarCASO1(this.key_cuenta, result[i].key);
+                               this.auxMontoSaldado = this.auxMontoSaldado - result[i].total_compra;
+                               this.saldado_hasta_fecha_new = result[i].fecha_compra_number;
+                              }
+                              else if(!ingresoAldetalle) // ENTRAMOS AL DETALLE
+                              {
+                                    ingresoAldetalle = true;
+                                    let key_compra = result[i].key;
+                                    this.saldado_hasta_fecha_new = result[i].fecha_compra_number;                                  
+                                  
+                                    // traemos el detalle
+                                    this.listaDetalle$ = this.anotacionesService.getDetalle(this.key_cuenta, result[i].key)
+                                       .snapshotChanges().map(changes => {
+                                         return changes.map (c => ({
+                                         key: c.payload.key, ...c.payload.val()
+                                       }));
+                                     });  
+                                     
+                                     this.listaDetalle$.pipe(take(1)).subscribe(result2 => {  
+
+                                     let length2 = result2.length;
+                                     let faltaSaldar = 0;
+                                     // recorremos el detalle y marcamos el porcentaje saldado
+
+                                     for (var j = 0; j < length2; ++j) 
+                                      {
+                                        if(this.auxMontoSaldado >= result2[j].total_detalle)
+                                        {
+                                          this.auxMontoSaldado = this.auxMontoSaldado - result2[j].total_detalle;
+                                          this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result2[j].key, 100);
+                                        }
+                                        else
+                                        {
+                                          let porcentaje = this.auxMontoSaldado / result2[j].total_detalle;
+                                          this.auxMontoSaldado = 0;
+                                          faltaSaldar += (1 - porcentaje) * result2[j].total_detalle;
+                                          this.anotacionesService.actulizarCASO2Detalle(this.key_cuenta, key_compra, result2[j].key, porcentaje);
+                                          break;
+                                        }                  
+                                      }  
+                                    // la tildamos como saldada para que no pueda ser anulada
+                                    this.anotacionesService.actulizarCASO2Compra(this.key_cuenta, key_compra, faltaSaldar);   
+
+                                    });    
+                                  
+                                   }
+                                 } 
+                              }
+                              // Actualizamos la cuenta :: el saldado hasta la fecha                                               
+                              this.anotacionesService.actualizarSaldadoHastaFecha(this.key_cuenta,this.saldado_hasta_fecha_new );
+                            }           
+                      );  
+  }
+
   // completamos los datos de la compra
   inicializarCompra(){
      this.compra.total_compra = this.monto_compra;
