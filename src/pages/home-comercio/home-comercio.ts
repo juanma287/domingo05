@@ -10,6 +10,8 @@ import {ClientePage} from "../gestion-clientes/cliente/cliente";
 import {ProductoPage} from "../gestion-productos/producto/producto";
 import {BuscarCuentaPage} from "../gestion-anotaciones/buscar-cuenta/buscar-cuenta";
 import { VerAnotacionesPage } from "../gestion-anotaciones/ver-anotaciones/ver-anotaciones";
+import { BorrarAnotacionesPage } from "../gestion-anotaciones/borrar-anotaciones/borrar-anotaciones";
+
 
 import { Usuario } from '../../model/usuario/usuario.model';
 import { DatePipe } from '@angular/common';
@@ -55,6 +57,12 @@ export class HomeComercioPage {
       case 'ver_anotaciones': { 
           // mostramos el home de cuenta
           this.nav.push(VerAnotacionesPage); 
+          break; 
+          
+       } 
+      case 'borrar_anotaciones': { 
+          // mostramos el home de cuenta
+          this.nav.push(BorrarAnotacionesPage); 
           break; 
           
        } 

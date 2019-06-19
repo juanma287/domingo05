@@ -46,7 +46,7 @@ import { Anotar } from "../pages/gestion-anotaciones/anotar/anotar";
 import { VerAnotacionesPage } from "../pages/gestion-anotaciones/ver-anotaciones/ver-anotaciones";
 import { VerAnotacionesCuentaPage } from "../pages/gestion-anotaciones/ver-anotaciones-cuenta/ver-anotaciones-cuenta";
 import { VerDetallePage } from "../pages/gestion-anotaciones/ver-detalle/ver-detalle";
-
+import { BorrarAnotacionesPage } from "../pages/gestion-anotaciones/borrar-anotaciones/borrar-anotaciones";
 
 import {ConfiguaracionesPage} from "../pages/configuaraciones/configuaraciones";
 import {RegisterPage} from "../pages/register/register";
@@ -102,6 +102,7 @@ registerLocaleData(localeEs);
     VerAnotacionesPage,
     VerAnotacionesCuentaPage,
     VerDetallePage,
+    BorrarAnotacionesPage,
 
     ConfiguaracionesPage,
     RegisterPage,
@@ -148,6 +149,7 @@ registerLocaleData(localeEs);
     VerAnotacionesPage,
     VerAnotacionesCuentaPage,
     VerDetallePage,
+    BorrarAnotacionesPage,
     
     ProductoPage,
     AgregarProductoPage,
