@@ -27,6 +27,8 @@ import {ProductoPage} from "../pages/gestion-productos/producto/producto";
 import {AgregarProductoPage} from "../pages/gestion-productos/agregar-producto/agregar-producto";
 import {EditarProductoPage} from "../pages/gestion-productos/editar-producto/editar-producto";
 
+// gestion
+import {GestionPage} from "../pages/gestion/gestion";
 
 // gestion de cuentas
 import {CuentaPage} from "../pages/gestion-cuentas/cuenta/cuenta";
@@ -73,6 +75,7 @@ registerLocaleData(localeEs);
 
 
 
+
 @NgModule({
   declarations: [
     MyApp,
@@ -89,6 +92,7 @@ registerLocaleData(localeEs);
     AgregarProductoPage,
     EditarProductoPage,
 
+    GestionPage,
     CuentaPage, 
     AgregarCuentaPage,
     EditarCuentaPage,
@@ -136,6 +140,7 @@ registerLocaleData(localeEs);
     ManualDeUsuarioPage,
     PoliticaDePrivacidadPage,
     
+    GestionPage,
     CuentaPage, 
     AgregarCuentaPage,
     EditarCuentaPage,

@@ -11,6 +11,7 @@ import {ProductoPage} from "../gestion-productos/producto/producto";
 import {BuscarCuentaPage} from "../gestion-anotaciones/buscar-cuenta/buscar-cuenta";
 import { VerAnotacionesPage } from "../gestion-anotaciones/ver-anotaciones/ver-anotaciones";
 import { BorrarAnotacionesPage } from "../gestion-anotaciones/borrar-anotaciones/borrar-anotaciones";
+import {GestionPage} from "../gestion/gestion";
 
 
 import { Usuario } from '../../model/usuario/usuario.model';
@@ -60,15 +61,9 @@ export class HomeComercioPage {
           break; 
           
        } 
-      case 'borrar_anotaciones': { 
-          // mostramos el home de cuenta
-          this.nav.push(BorrarAnotacionesPage); 
-          break; 
-          
-       } 
-      case 'cuenta': { 
+      case 'gestion': { 
           // mostramos el home de clientes
-          this.nav.push(CuentaPage); 
+          this.nav.push(GestionPage); 
           break; 
        } 
        case 'cliente': { 
@@ -76,11 +71,7 @@ export class HomeComercioPage {
           this.nav.push(ClientePage); 
           break; 
        } 
-       case 'producto': {
-          // mostramos el home de productos
-          this.nav.push(ProductoPage);
-          break;    
-       } 
+
       }
   }
 

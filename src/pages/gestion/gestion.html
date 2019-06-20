@@ -1,0 +1,42 @@
+
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Gestión 
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content padding class="trips detail-bg">
+
+
+
+<ion-card no-margin margin-bottom class="full-width">
+  <ion-card-header style="font-size: 1.9rem;">
+  </ion-card-header> 
+  <hr>
+  <ion-list  class="border-bottom">
+
+	   <ion-item tappable (click)="gestionMenuComercio('cuenta')" class="border-bottom">
+	     <ion-icon name="logo-buffer" item-start></ion-icon>
+	        Gestionar cuentas
+	   </ion-item>
+	    <!--ion-item tappable (click)="gestionMenuComercio('cliente')" class="border-bottom">
+	      <ion-icon name="contacts" item-start></ion-icon>
+	        Clientes vinculados
+	    </ion-item -->
+	    <ion-item tappable (click)="gestionMenuComercio('producto')" class="border-bottom">
+	      <ion-icon name="cart" item-start></ion-icon>
+	        Gestionar productos	      
+	    </ion-item>
+	    <ion-item tappable (click)="gestionMenuComercio('borrar_anotaciones')" class="border-bottom">
+         <ion-icon name="trash" item-start></ion-icon>
+         Limpiar daros 
+        </ion-item>
+
+
+  </ion-list>
+</ion-card>
+
+
+</ion-content>
