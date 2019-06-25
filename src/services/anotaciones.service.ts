@@ -54,6 +54,15 @@ export class AnotacionesService {
       return listaCompras;
     }
 
+     // traemos todas las compras de una cuenta, anteriores a fecha de corte. 
+     getComprasFechaDeCorte(key_cuenta, fecha_de_corte)
+    {
+      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta;
+      let listaCompras = this.db.list<Compra>(path,
+              ref => ref.orderByChild('fecha_compra_number').startAt(fecha_de_corte)); 
+      return listaCompras;
+    }
+
     getComprasNoSaldadas(key_cuenta, fecha_saldado_hasta)
     {
       let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta;
@@ -170,8 +179,8 @@ export class AnotacionesService {
  {
 
     let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle/'+ key_detalle;
-    console.log(path);
-    console.log(porcentaje_sald);
+   // console.log(path);
+   // console.log(porcentaje_sald);
     let data =
          { 
            porcentaje_saldado: porcentaje_sald,

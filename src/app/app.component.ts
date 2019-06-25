@@ -9,9 +9,7 @@ import {Storage} from '@ionic/storage';
 import { HomeComercioPage } from "../pages/home-comercio/home-comercio";
 import { LoginPage } from "../pages/login/login";
 
-import { CuentaPage } from "../pages/gestion-cuentas/cuenta/cuenta";
-import { ClientePage } from "../pages/gestion-clientes/cliente/cliente";
-import { ProductoPage } from "../pages/gestion-productos/producto/producto";
+import {GestionPage} from "../pages/gestion/gestion";
 
 import { BuscarCuentaPage } from "../pages/gestion-anotaciones/buscar-cuenta/buscar-cuenta";
 import { VerAnotacionesPage } from "../pages/gestion-anotaciones/ver-anotaciones/ver-anotaciones";
@@ -58,9 +56,9 @@ export class MyApp {
       {title: 'Inicio', component: HomeComercioPage, icon: 'home'},
       {title: 'Anotar', component: BuscarCuentaPage, icon: 'create'},
       {title: 'Saldos', component: VerAnotacionesPage, icon: 'logo-usd'},
-      {title: 'Gestionar cuentas', component: CuentaPage, icon: 'logo-buffer'},
+      {title: 'Gestión', component: GestionPage, icon: 'logo-buffer'},
      // {title: 'Clientes Vinculados', component: ClientePage, icon: 'contacts'},
-      {title: 'Gestionar productos', component: ProductoPage, icon: 'cart'}  
+      {title: 'Estadísticas', component: '', icon: 'trending-up'}  
     ];
   }
 
@@ -144,7 +142,7 @@ export class MyApp {
   }
 
   openPage(page) {
-    this.nav.setRoot(page.component);
+    this.nav.push(page.component);
   }
 
   logout() {

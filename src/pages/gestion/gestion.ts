@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController,PopoverController, NavParams } from 'ionic-angular';
 import {CuentaPage} from "../gestion-cuentas/cuenta/cuenta";
 import {ProductoPage} from "../gestion-productos/producto/producto";
 import { BorrarAnotacionesPage } from "../gestion-anotaciones/borrar-anotaciones/borrar-anotaciones";
+import {ConfiguaracionesPage} from "../configuaraciones/configuaraciones";
 
 @Component({
   selector: 'gestion',
@@ -10,7 +11,7 @@ import { BorrarAnotacionesPage } from "../gestion-anotaciones/borrar-anotaciones
 })
 export class GestionPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController) {
   }
 
 
@@ -37,6 +38,14 @@ export class GestionPage {
        } 
       }
   }
+
+    configuaraciones(myEvent) {
+    let popover = this.popoverCtrl.create(ConfiguaracionesPage);
+    popover.present({
+      ev: myEvent
+    });
+  }
+
 
  }
 

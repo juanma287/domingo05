@@ -5,6 +5,8 @@ import { CuentaService } from '../../../services/cuenta.service'
 import { Observable } from 'rxjs/Observable';
 import { ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { VerAnotacionesCuentaPage } from "../../gestion-anotaciones/ver-anotaciones-cuenta/ver-anotaciones-cuenta";
+import { take } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 
 
 
@@ -17,6 +19,7 @@ export class VerAnotacionesPage {
   listaCuentas$: Observable<Cuenta[]>
   items$: Observable<Cuenta[]>
   total: number=0
+  SubscriptionCuenta: Subscription;
 
 
   constructor(
@@ -43,7 +46,7 @@ export class VerAnotacionesPage {
      this.inicializarItems();
     
      // calculamos el total de las deudas
-     this.listaCuentas$.subscribe(result => {     
+     this.SubscriptionCuenta = this.listaCuentas$.pipe(take(1)).subscribe((result: any[]) => {  
               let length = result.length;
               let aux = 0;
               for (var i = 0; i < length; ++i) {
@@ -57,6 +60,12 @@ export class VerAnotacionesPage {
     loader.dismiss()                     
     });
 
+  }
+  
+  // quitamos la suscripcion al observable
+  ngOnDestroy() {
+      if(this.SubscriptionCuenta && !this.SubscriptionCuenta.closed)
+           this.SubscriptionCuenta.unsubscribe();            
   }
 
   inicializarItems()
