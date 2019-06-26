@@ -63,6 +63,13 @@ export class AnotacionesService {
       return listaCompras;
     }
 
+    borrarCompra(key_cuenta, key_compra)
+    {
+     let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta;
+     let listaCompras = this.db.list<Compra>(path).remove(key_compra);
+     return  listaCompras;
+    }
+
     getComprasNoSaldadas(key_cuenta, fecha_saldado_hasta)
     {
       let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta;

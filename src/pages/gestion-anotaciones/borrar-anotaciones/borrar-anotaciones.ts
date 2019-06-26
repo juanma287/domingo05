@@ -1,5 +1,5 @@
 import { Component} from '@angular/core';
-import { NavController, LoadingController, PopoverController} from 'ionic-angular';;
+import { NavController, LoadingController, PopoverController, AlertController,ToastController } from 'ionic-angular';;
 import { Cuenta } from '../../../model/cuenta/cuenta.model';
 import { Compra } from '../../../model/compra/compra.model';
 import { CuentaService } from '../../../services/cuenta.service';
@@ -33,7 +33,9 @@ export class BorrarAnotacionesPage {
   	 private cuentaService: CuentaService,
   	 public loading: LoadingController,
      public popoverCtrl: PopoverController,
-     private anotacionesService: AnotacionesService
+     private anotacionesService: AnotacionesService,
+     public alertCtrl: AlertController,
+     public toastCtrl: ToastController
   	 ) 
 	  {
          this.fechaParaHTML = new Date().toISOString();
@@ -52,39 +54,76 @@ export class BorrarAnotacionesPage {
 
   borrar()
   {
-   let loader = this.loading.create({  content: 'Pocesando…',  });
-   loader.present().then(() => {
 
-    // Treamos las cuentas del comercio
-    this.listaCuentas$ = this.cuentaService.getListaOrderBy('fecha_ultima_compra_number')
-       .snapshotChanges().map(changes => {
-         return changes.map (c => ({
-         key: c.payload.key, ...c.payload.val()
-      }));
-    });
-    
-     this.SubscriptionCuenta = this.listaCuentas$.pipe(take(1)).subscribe((result: any[]) => {  
-              let length = result.length;
-              let aux = 0;
-              for (var i = 0; i < length; ++i) {
-                // Si nunca pago, directamente no traemos sus anotaciones
-                if(result[i].fecha_ultimo_pago_number != 0) 
+   let alert = this.alertCtrl.create({
+      title: 'Confirmar',
+      message: '¿Esta seguro que desea borrar aquellas anotaciones que sean anteriores a la fecha seleccionada?',
+      buttons: [
+        {
+          text: 'cancelar',
+          role: 'cancel',
+          handler: () => {
+            // codigo si presiona cancelar
+          }
+        },
+        {
+          text: 'aceptar',
+          handler: () => {
+                         // show message
+                let toast = this.toastCtrl.create({
+                  message: 'Operacion realizada con éxito!',
+                  duration: 2500,
+                  position: 'bottom',
+                  cssClass: "yourCssClassName",
+                });
+
+               let loader = this.loading.create({  content: 'Pocesando…',  });
+               loader.present().then(() => {
+
+                       // Treamos las cuentas del comercio
+        this.listaCuentas$ = this.cuentaService.getListaOrderBy('fecha_ultima_compra_number')
+           .snapshotChanges().map(changes => {
+             return changes.map (c => ({
+             key: c.payload.key, ...c.payload.val()
+          }));
+        });
+        
+         this.SubscriptionCuenta = this.listaCuentas$.pipe(take(1)).subscribe((result: any[]) => {  
+                  let length = result.length;
+                  let aux = 0;
+                  for (var i = 0; i < length; ++i) {
+                    // Si nunca pago, directamente no traemos sus anotaciones
+                    if(result[i].fecha_ultimo_pago_number != 0) 
                  {
                   this.ejecutarBorrado(result[i].key);
                  }  
               }                 
         });
-      
-    // finalizo loader
-    loader.dismiss()                     
+
+
+
+
+
+                       // finalizo loader
+                       loader.dismiss();
+                       toast.present();  
+                       this.navCtrl.pop();
+                 
+               });
+          }
+        }
+      ]
     });
+    alert.present();    
+
+
 
 
   }
 
-  ejecutarBorrado(key)
+  ejecutarBorrado(key_cuenta)
   {
-   this.listaCompras$ = this.anotacionesService.getComprasFechaDeCorte(key, this.fecha_de_borrado_number*-1)
+   this.listaCompras$ = this.anotacionesService.getComprasFechaDeCorte(key_cuenta, this.fecha_de_borrado_number*-1)
             .snapshotChanges().map(changes => {
                      return changes.map (c => ({
                      key: c.payload.key, ...c.payload.val()
@@ -100,9 +139,10 @@ export class BorrarAnotacionesPage {
                    // se trata de una anotacion aun no solada por lo que no la borramos
                  }
                  else if(result[i].estado != "parcialmente saldada")
-                 {
-                                      console.log(result[i]);
-
+                 {               
+                  console.log(key_cuenta);
+                   this.anotacionesService.borrarCompra(key_cuenta, result[i].key)                                 
+            
                  }
                 }
 
