@@ -13,7 +13,9 @@ import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 export class EditarProductoPage {
 
   producto: Producto 
-  
+  precio_original: any
+  msjError: string
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -24,31 +26,93 @@ export class EditarProductoPage {
     public toastCtrl: ToastController
     ) 
   {   
+     this.msjError = '';
   }
 
   ionViewWillLoad() {
    this.producto = this.navParams.get('producto');
+   this.precio_original = this.producto.precio;
+
   }
  
  
   actualizar(producto: Producto) {
-          // show message
-      let toast = this.toastCtrl.create({
-        message: 'Producto actualizado!',
-        duration: 1500,
-        position: 'bottom',
-        cssClass: "yourCssClassName",
-      });
 
-     let loader = this.loading.create({  content: 'Pocesando…',  });
-        loader.present().then(() => {
-        this.productoService.actualizar(producto).then(() => {
-              // finalizo loader
-             loader.dismiss(); 
-             toast.present();   
-             this.navCtrl.pop();
-        })
-      });
+
+     if(this.producto.precio < 0)
+     {
+       this.msjError = "No puede ingresar valores negativos";
+     }
+     else if ( this.producto.precio.toString().length == 0)
+     {
+       this.msjError = "El precio no puede estar vacio";
+     }
+     else
+     {
+       this.msjError = '';
+     }   
+
+
+  if(this.msjError === '') // si no hay msj de error comenzamos a procesar
+  {
+            // show message
+        let toast = this.toastCtrl.create({
+          message: 'Producto actualizado!',
+          duration: 2500,
+          position: 'bottom',
+          cssClass: "yourCssClassName",
+        });
+
+     
+     // Si modifico el precio le preguntamos si desea que la acutalizacion sea retroactiva 
+     if(this.precio_original != this.producto.precio)
+     {
+          let alert = this.alertCtrl.create({
+          title: 'Consulta',
+          message: '¿Desea que la actualización del precio sea retroactiva?',
+          buttons: [
+            {
+              text: 'No',
+              role: 'cancel',
+              handler: () => {
+                  // codigo si presiona cancelar
+                  let loader = this.loading.create({  content: 'Pocesando…',  });
+                  loader.present().then(() => {
+                  this.productoService.actualizar(producto).then(() => {
+                        // finalizo loader
+                       loader.dismiss(); 
+                       toast.present();   
+                       this.navCtrl.pop();
+                  })
+                });
+              }
+            },
+            {
+              text: 'Si',
+              handler: () => {
+
+                  console.log("eligio retroactivo");
+              }
+            }
+          ]
+        });
+        alert.present();    
+     }
+     else
+     {
+              let loader = this.loading.create({  content: 'Pocesando…',  });
+                loader.present().then(() => {
+                this.productoService.actualizar(producto).then(() => {
+                      // finalizo loader
+                     loader.dismiss(); 
+                     toast.present();   
+                     this.navCtrl.pop();
+                })
+              });
+     }
+
+  }
+
          
   }
  

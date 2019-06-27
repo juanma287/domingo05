@@ -38,6 +38,10 @@
     </div>
   </div>
   <BR>
+      <div *ngIf="msjError != ''" class="error">
+          <label style="margin-left: 5px;"> {{msjError}}</label>
+     </div>
+     
      <ion-grid>
         <ion-row>
           <ion-col col-6>
