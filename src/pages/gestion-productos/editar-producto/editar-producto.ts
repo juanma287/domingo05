@@ -4,6 +4,14 @@ import { Producto } from '../../../model/producto/producto.model';
 import { ProductoService } from '../../../services/producto.service';
 import { ProductoPage } from "../producto/producto";
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
+import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { Cuenta } from '../../../model/cuenta/cuenta.model';
+import { Compra } from '../../../model/compra/compra.model';
+import { CuentaService } from '../../../services/cuenta.service';
+import { AnotacionesService } from '../../../services/anotaciones.service';
+import { Detalle } from '../../../model/detalle/detalle.model';
 
 
 @Component({
@@ -15,6 +23,11 @@ export class EditarProductoPage {
   producto: Producto 
   precio_original: any
   msjError: string
+  listaCuentas$: Observable<Cuenta[]>
+  listaCompras$: Observable<Compra[]>
+  listaDetalle$: Observable<Detalle[]>
+  SubscriptionCuenta: Subscription;
+
 
   constructor(
     public navCtrl: NavController,
@@ -23,7 +36,9 @@ export class EditarProductoPage {
     public popoverCtrl: PopoverController,
     public alertCtrl: AlertController,
     public loading: LoadingController,
-    public toastCtrl: ToastController
+    public toastCtrl: ToastController,
+    private cuentaService: CuentaService,
+    private anotacionesService: AnotacionesService
     ) 
   {   
      this.msjError = '';
@@ -90,8 +105,16 @@ export class EditarProductoPage {
             {
               text: 'Si',
               handler: () => {
-
-                  console.log("eligio retroactivo");
+                  let loader = this.loading.create({  content: 'Pocesando…',  });
+                  loader.present().then(() => {
+                  // Actualizamos todas las compras que no esten saldadas y tengan este producto
+                  this.actualizarPrecioRetroactivamente(this.producto.key);
+                  this.productoService.actualizar(producto).then(() => {
+                       loader.dismiss(); 
+                       toast.present();   
+                       this.navCtrl.pop();
+                  })
+                })
               }
             }
           ]
@@ -110,12 +133,103 @@ export class EditarProductoPage {
                 })
               });
      }
-
-  }
-
-         
+   }        
   }
  
+ // Actualizamos todas las compras que no esten saldadas y tengan este producto
+ actualizarPrecioRetroactivamente(key_prodcuto)
+ {
+
+   // Treamos las cuentas del comercio
+    this.listaCuentas$ = this.cuentaService.getListaOrderBy('fecha_ultima_compra_number')
+    .snapshotChanges().map(changes => {
+     return changes.map (c => ({
+               key: c.payload.key, ...c.payload.val()
+      }));
+    });
+
+    this.SubscriptionCuenta = this.listaCuentas$.pipe(take(1)).subscribe((result: any[]) => {  
+         let length = result.length;
+         let aux = 0;
+         for (var i = 0; i < length; ++i) {
+         // Si nunca compro, directamente no traemos sus anotaciones
+          if(result[i].fecha_ultima_compra_number != 0) 
+          {
+                  this.ejecutarAtualizado(result[i].key, key_prodcuto, result[i].total_deuda);
+          }  
+         }                 
+   });
+ }
+
+ ejecutarAtualizado(key_cuenta, key_prodcuto, total_deuda)
+  {
+   this.listaCompras$ = this.anotacionesService.getComprasAnotaIntacta(key_cuenta)
+            .snapshotChanges().map(changes => {
+                     return changes.map (c => ({
+                     key: c.payload.key, ...c.payload.val()
+                 }));
+            });     
+
+   this.listaCompras$.pipe(take(1)).subscribe((result: any[]) => {    
+                let length = result.length;
+
+                for (var i = 0; i < length; ++i) 
+                {
+                 if(result[i].tipo == "anota")
+                 {
+                   let total_compra = result[i].total_compra;
+                   let key_compra = result[i].key;
+                   // debemos analizar si en dicha compra hay un producto a acutalizar 
+                   // Por lo que traemos el detalle de la compra                    
+                   this.listaDetalle$ = this.anotacionesService.getDetalleProducto(key_cuenta, key_compra, key_prodcuto)
+                        .snapshotChanges().map(changes => {
+                         return changes.map (c => ({
+                         key: c.payload.key, ...c.payload.val()
+                        }));
+                     });    
+
+                   this.listaDetalle$.pipe(take(1)).subscribe((result2: any[]) => {  
+                   let total_detalle = result2[0].total_detalle;
+                   let key_detalle = result2[0].key;
+                   let nuevo_precio = this.producto.precio;
+                   let nuevo_total_detalle = result2[0].cantidad * nuevo_precio;
+
+                   console.log(total_deuda);
+                   console.log(total_compra);
+                   console.log(total_detalle);
+
+                   // PASO 1: Restamos al total_deuda el total_compra (que será actualizado)
+                   this.anotacionesService.actualizarTotalDeudaComercioPASO1(key_cuenta, total_deuda, total_compra);
+
+                   // PASO 2: Restamos al total_compra el total_detalle (que será actualizado)
+                   // NO HACE FALTA ESTE PASO, PUEDO HACER EL CALCULO Y GUARDRLO
+                   let total_compra_sin_detalle = total_compra - total_detalle;
+                   this.anotacionesService.actualizarTotalCompraPASO2(key_cuenta, total_detalle, key_compra, total_compra, total_detalle);
+
+                   // PASO 3: Actualizamos el detalle
+                   this.anotacionesService.actulizarDetallePASO3(key_cuenta, key_compra, key_detalle, nuevo_precio, nuevo_total_detalle);
+                 
+                   // PASO 4: Sumamos al total_compra el NUEVO total_detalle (ya actualizado)
+                   let total_nuevo = total_compra_sin_detalle + nuevo_total_detalle;
+                   this.anotacionesService.actualizarTotalCompraPASO2(key_cuenta, key_compra, total_compra, total_detalle);
+                   // PASO 5: Sumamos al total_deuda el NUEVO total_compra (ya actualizado)
+
+                   let length2 = result2.length;
+                    // recorremos el detalle y marcamos el porcentaje saldado
+                   });        
+                 }
+                }
+
+               });  
+  }
+
+   // quitamos la suscripcion al observable
+  ngOnDestroy() {
+      if(this.SubscriptionCuenta && !this.SubscriptionCuenta.closed)
+           this.SubscriptionCuenta.unsubscribe();            
+  }
+
+
   eliminar(producto: Producto) {
 
       let alert = this.alertCtrl.create({

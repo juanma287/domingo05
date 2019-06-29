@@ -80,15 +80,15 @@ export class BorrarAnotacionesPage {
                let loader = this.loading.create({  content: 'Pocesando…',  });
                loader.present().then(() => {
 
-                       // Treamos las cuentas del comercio
-        this.listaCuentas$ = this.cuentaService.getListaOrderBy('fecha_ultima_compra_number')
-           .snapshotChanges().map(changes => {
-             return changes.map (c => ({
-             key: c.payload.key, ...c.payload.val()
-          }));
-        });
-        
-         this.SubscriptionCuenta = this.listaCuentas$.pipe(take(1)).subscribe((result: any[]) => {  
+             // Treamos las cuentas del comercio
+            this.listaCuentas$ = this.cuentaService.getListaOrderBy('fecha_ultima_compra_number')
+               .snapshotChanges().map(changes => {
+                 return changes.map (c => ({
+                 key: c.payload.key, ...c.payload.val()
+              }));
+            });
+            
+            this.SubscriptionCuenta = this.listaCuentas$.pipe(take(1)).subscribe((result: any[]) => {  
                   let length = result.length;
                   let aux = 0;
                   for (var i = 0; i < length; ++i) {
@@ -98,21 +98,17 @@ export class BorrarAnotacionesPage {
                   this.ejecutarBorrado(result[i].key);
                  }  
               }                 
-        });
+            });
 
-
-
-
-
-                       // finalizo loader
-                       loader.dismiss();
-                       toast.present();  
-                       this.navCtrl.pop();
+              // finalizo loader
+              loader.dismiss();
+              toast.present();  
+              this.navCtrl.pop();
                  
-               });
-          }
-        }
-      ]
+           });
+         }
+       }
+     ]
     });
     alert.present();    
 
@@ -150,7 +146,7 @@ export class BorrarAnotacionesPage {
   }
 
 
-    // quitamos la suscripcion al observable
+  // quitamos la suscripcion al observable
   ngOnDestroy() {
       if(this.SubscriptionCuenta && !this.SubscriptionCuenta.closed)
            this.SubscriptionCuenta.unsubscribe();            
