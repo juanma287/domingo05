@@ -176,27 +176,7 @@ export class AnotacionesService {
 
     } 
 
-  actualizarTotalDeudaComercioPASO1(key_cuenta, total_deudaa, total_compra)
-  {
 
-       let path =  'lista-comercio/'+ this.key_comercio+'/cuentas/'+ key_cuenta;    
-       let data =
-         { 
-           total_deuda: total_deudaa - total_compra,
-         }
-        return this.db.object(path).update(data);   
-  }
-
-  actualizarTotalCompraPASO2(key_cuenta, key_compra, total_compraa, total_detalle)
-  {
-      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra;
-      let data =
-         { 
-           total_compra: total_compraa - total_detalle,
-         }
-      return this.db.object(path).update(data);  
-  }
-  
   actulizarDetallePASO3(key_cuenta, key_compra, key_detalle, nuevo_precio, nuevo_total_detalle)
   {
     let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra + '/detalle/'+ key_detalle;
@@ -209,6 +189,28 @@ export class AnotacionesService {
       return this.db.object(path).update(data);  
 
   }
+
+    actualizarTotalCompraPASO4(key_cuenta, key_compra, total_compra_nuevo)
+  {
+      let path =  'lista-compra/'+ this.key_comercio +'/'+ key_cuenta +'/'+ key_compra;
+      let data =
+         { 
+           total_compra: total_compra_nuevo,
+         }
+      return this.db.object(path).update(data);  
+  }
+
+    actualizarTotalDeudaComercioPASO5(key_cuenta, total_deuda_nuevo)
+  {
+
+       let path =  'lista-comercio/'+ this.key_comercio+'/cuentas/'+ key_cuenta;    
+       let data =
+         { 
+           total_deuda: total_deuda_nuevo,
+         }
+        return this.db.object(path).update(data);   
+  }
+
   // CASO 1: Es la primera vez que paga y salda el total (directamente actualizamos el estado de la compra, no entramos al detalle)
   actulizarCASO1(key_cuenta, key_compra)
   {

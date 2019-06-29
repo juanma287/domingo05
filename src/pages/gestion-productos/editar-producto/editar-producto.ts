@@ -163,6 +163,7 @@ export class EditarProductoPage {
 
  ejecutarAtualizado(key_cuenta, key_prodcuto, total_deuda)
   {
+
    this.listaCompras$ = this.anotacionesService.getComprasAnotaIntacta(key_cuenta)
             .snapshotChanges().map(changes => {
                      return changes.map (c => ({
@@ -172,6 +173,7 @@ export class EditarProductoPage {
 
    this.listaCompras$.pipe(take(1)).subscribe((result: any[]) => {    
                 let length = result.length;
+                let total_deuda_actualizada = total_deuda;
 
                 for (var i = 0; i < length; ++i) 
                 {
@@ -194,28 +196,28 @@ export class EditarProductoPage {
                    let nuevo_precio = this.producto.precio;
                    let nuevo_total_detalle = result2[0].cantidad * nuevo_precio;
 
-                   console.log(total_deuda);
-                   console.log(total_compra);
-                   console.log(total_detalle);
-
                    // PASO 1: Restamos al total_deuda el total_compra (que será actualizado)
-                   this.anotacionesService.actualizarTotalDeudaComercioPASO1(key_cuenta, total_deuda, total_compra);
+                   let total_deuda_sin_compra = total_deuda_actualizada - total_compra;
 
                    // PASO 2: Restamos al total_compra el total_detalle (que será actualizado)
-                   // NO HACE FALTA ESTE PASO, PUEDO HACER EL CALCULO Y GUARDRLO
                    let total_compra_sin_detalle = total_compra - total_detalle;
-                   this.anotacionesService.actualizarTotalCompraPASO2(key_cuenta, total_detalle, key_compra, total_compra, total_detalle);
 
                    // PASO 3: Actualizamos el detalle
                    this.anotacionesService.actulizarDetallePASO3(key_cuenta, key_compra, key_detalle, nuevo_precio, nuevo_total_detalle);
                  
                    // PASO 4: Sumamos al total_compra el NUEVO total_detalle (ya actualizado)
-                   let total_nuevo = total_compra_sin_detalle + nuevo_total_detalle;
-                   this.anotacionesService.actualizarTotalCompraPASO2(key_cuenta, key_compra, total_compra, total_detalle);
-                   // PASO 5: Sumamos al total_deuda el NUEVO total_compra (ya actualizado)
 
-                   let length2 = result2.length;
-                    // recorremos el detalle y marcamos el porcentaje saldado
+                   let total_compra_nuevo = total_compra_sin_detalle + nuevo_total_detalle;
+                   this.anotacionesService.actualizarTotalCompraPASO4(key_cuenta, key_compra, total_compra_nuevo);
+                  
+                
+                   // PASO 5: Sumamos al total_deuda el NUEVO total_compra (ya actualizado)
+                   let total_deuda_nuevo = total_deuda_sin_compra + total_compra_nuevo;
+                   total_deuda_actualizada = total_deuda_nuevo; 
+
+                   this.anotacionesService.actualizarTotalDeudaComercioPASO5(key_cuenta, total_deuda_nuevo);
+
+
                    });        
                  }
                 }
