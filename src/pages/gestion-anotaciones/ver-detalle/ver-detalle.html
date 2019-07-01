@@ -156,7 +156,7 @@
   </ion-card>
 
 
-   <ion-grid *ngIf="compra?.estado == 'intacta'" >
+   <ion-grid *ngIf="compra?.estado == 'intacta' && compra?.tipo != 'entrega' " >
         <ion-row>
           <ion-col col-12>
             <button ion-button icon-start block  (click)="anular()">

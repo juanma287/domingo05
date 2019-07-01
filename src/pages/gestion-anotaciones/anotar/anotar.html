@@ -38,7 +38,8 @@
     </ion-item>
     <ion-item>
        <ion-icon name="md-calendar" color="primary" item-left></ion-icon>
-       <ion-datetime class="no-pl" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="fechaParaHTML" doneText="Ok" cancelText="Cancelar"  (ionChange)="cambiarFecha()" ></ion-datetime>
+        <span>{{fecha_compra}}</span>
+       <!ion-datetime class="no-pl" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="fechaParaHTML" doneText="Ok" cancelText="Cancelar"  (ionChange)="cambiarFecha()" !--><!/ion-datetime !-->
    </ion-item>
   </ion-card>
 

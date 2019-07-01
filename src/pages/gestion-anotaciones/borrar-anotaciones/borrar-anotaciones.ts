@@ -136,7 +136,6 @@ export class BorrarAnotacionesPage {
                  }
                  else if(result[i].estado != "parcialmente saldada")
                  {               
-                  console.log(key_cuenta);
                    this.anotacionesService.borrarCompra(key_cuenta, result[i].key)                                 
             
                  }
