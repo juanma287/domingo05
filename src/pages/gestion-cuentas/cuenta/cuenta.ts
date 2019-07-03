@@ -2,11 +2,9 @@ import { Component} from '@angular/core';
 import { NavController, LoadingController, PopoverController} from 'ionic-angular';;
 import { Cuenta } from '../../../model/cuenta/cuenta.model';
 import { CuentaService } from '../../../services/cuenta.service'
-import { ComercioService } from '../../../services/comercio.service';
 import { AgregarCuentaPage } from "../agregar-cuenta/agregar-cuenta";
 import { EditarCuentaPage } from "../editar-cuenta/editar-cuenta";
 import { Observable } from 'rxjs/Observable';
-import { HomeComercioPage } from "../../home-comercio/home-comercio";
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { Subscription } from 'rxjs/Subscription';
 

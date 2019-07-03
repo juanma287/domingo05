@@ -1,16 +1,13 @@
 
 import {Component} from "@angular/core";
-import {NavController, PopoverController, LoadingController} from "ionic-angular";
+import {NavController, PopoverController} from "ionic-angular";
 import {Storage} from '@ionic/storage';
 
 import {ConfiguaracionesPage} from "../configuaraciones/configuaraciones";
 
-import {CuentaPage} from "../gestion-cuentas/cuenta/cuenta";
 import {ClientePage} from "../gestion-clientes/cliente/cliente";
-import {ProductoPage} from "../gestion-productos/producto/producto";
 import {BuscarCuentaPage} from "../gestion-anotaciones/buscar-cuenta/buscar-cuenta";
 import { VerAnotacionesPage } from "../gestion-anotaciones/ver-anotaciones/ver-anotaciones";
-import { BorrarAnotacionesPage } from "../gestion-anotaciones/borrar-anotaciones/borrar-anotaciones";
 import {GestionPage} from "../gestion/gestion";
 
 

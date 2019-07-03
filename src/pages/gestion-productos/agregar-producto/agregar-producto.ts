@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController,LoadingController, ToastController, NavParams,AlertController, PopoverController} from 'ionic-angular';
 import { Producto } from '../../../model/producto/producto.model';
 import { ProductoService } from '../../../services/producto.service';
-import { ProductoPage} from "../producto/producto";
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 
 @Component({

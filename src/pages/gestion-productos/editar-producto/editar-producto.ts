@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController,AlertController, NavParams,LoadingController, ToastController, PopoverController} from 'ionic-angular';
 import { Producto } from '../../../model/producto/producto.model';
 import { ProductoService } from '../../../services/producto.service';
-import { ProductoPage } from "../producto/producto";
 import {ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';

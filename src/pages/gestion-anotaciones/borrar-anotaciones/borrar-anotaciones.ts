@@ -6,7 +6,6 @@ import { CuentaService } from '../../../services/cuenta.service';
 import { AnotacionesService } from '../../../services/anotaciones.service';
 import { Observable } from 'rxjs/Observable';
 import { ConfiguaracionesPage} from "../../configuaraciones/configuaraciones";
-import { VerAnotacionesCuentaPage } from "../../gestion-anotaciones/ver-anotaciones-cuenta/ver-anotaciones-cuenta";
 import { DatePipe } from '@angular/common';
 import { take } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
@@ -130,7 +129,7 @@ export class BorrarAnotacionesPage {
                 let length = result.length;
                 for (var i = 0; i < length; ++i) 
                 {
-                 if(result[i].estado == "intacta" && result[i].tipo == "anota")
+                 if((result[i].estado == "intacta" && result[i].tipo == "anota") || (result[i].estado == "intacta" && result[i].tipo == "actualiza"))
                  {
                    // se trata de una anotacion aun no solada por lo que no la borramos
                  }
