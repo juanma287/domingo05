@@ -158,7 +158,7 @@ export class Anotar {
                 this.anotacionesService.agregarDetalle(this.key_cuenta, key_compra,this.listaDetalle[i]);
               }
               // actualizamos la cuenta del comercio 
-              this.anotacionesService.actualizarCuentaComercio(this.key_cuenta, this.total_deuda, this.compra.total_compra, this.operacion, this.compra.fecha_compra,  this.compra.fecha_compra_number );
+              this.anotacionesService.actualizarCuentaComercio(this.key_cuenta, this.total_deuda, this.compra.total_compra, this.operacion, this.compra.fecha_compra,  this.compra.fecha_compra_number, this.saldado_hasta_fecha);
               
               // SI SE TRATA DE UNA ENTREGA, MARCAMOS LAS COMPRAS QUE CORRESPONDAN COMO PAGADAS
               if(this.operacion === "entrega")

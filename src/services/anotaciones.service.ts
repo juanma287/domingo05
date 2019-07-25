@@ -148,7 +148,7 @@ export class AnotacionesService {
 
 
     // actualizamos el total de la deuda en la cuenta que tiene alamcenada el comercio
-    actualizarCuentaComercio(key_cuenta, total_deuda_cuenta,  monto_compra, tipo, fecha_compra, fecha_compra_number) {   
+    actualizarCuentaComercio(key_cuenta, total_deuda_cuenta,  monto_compra, tipo, fecha_compra, fecha_compra_number, saldado_hasta_fecha) {   
       
       let path =  'lista-comercio/'+ this.key_comercio+'/cuentas/'+ key_cuenta;
       if(tipo == 'entrega') // si es entrega
@@ -164,13 +164,29 @@ export class AnotacionesService {
       }
       else  // si anota 
       {
-        let data = 
-         { 
-           total_deuda: total_deuda_cuenta + monto_compra,
-           fecha_ultima_compra: fecha_compra,
-           fecha_ultima_compra_number: fecha_compra_number
-         }
-        return this.db.object(path).update(data); 
+        // si agrega una anotacion con fecha anterior al ultimo pago, debemos cambiar el saldado_hasta_fecha
+        // ya que si no, al realizar un nuevo pago, no tendría en cuenta esta anotacion
+        if(fecha_compra_number > saldado_hasta_fecha)
+        {
+          let data = 
+            { 
+                 total_deuda: total_deuda_cuenta + monto_compra,
+                 fecha_ultima_compra: fecha_compra,
+                 fecha_ultima_compra_number: fecha_compra_number,
+                 saldado_hasta_fecha: fecha_compra_number
+            }
+          return this.db.object(path).update(data); 
+        }
+        else
+        {
+          let data = 
+           { 
+             total_deuda: total_deuda_cuenta + monto_compra,
+             fecha_ultima_compra: fecha_compra,
+             fecha_ultima_compra_number: fecha_compra_number
+           }
+          return this.db.object(path).update(data); 
+        }
       }
 
 

@@ -167,7 +167,7 @@ export class VerAnotacionesCuentaPage {
   
      }
 
-     return msg.concat("\nEnviado desde la aplicación :: Libreta Electrónica V1.1");
+     return msg.concat("\nEnviado desde la aplicación :: Libreta Electrónica");
   }
 
   configuaraciones(myEvent) {
