@@ -31,7 +31,7 @@
     "angularfire2": "^5.0.0-rc.4",
     "cordova-android": "8.0.0",
     "cordova-android-support-gradle-release": "^2.1.0",
-    "cordova-browser": "5.0.4",
+    "cordova-browser": "6.0.0",
     "cordova-ios": "^5.0.0",
     "cordova-plugin-browsertab": "^0.2.0",
     "cordova-plugin-buildinfo": "^2.0.2",
